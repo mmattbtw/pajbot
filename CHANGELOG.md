@@ -2,7 +2,6 @@
 
 ## Unversioned
 
-- Minor: Added a default dark theme to the bot website
 - Bugfix: Fixed incorrect redirect after completing the `/bot_login` or `/streamer_login` process. (#869)
 
 ## v1.44

@@ -1,11 +1,8 @@
-{% extends "layout.html" %}
-{% set active_page = 'stats' %}
-{% block title %}Profile - {{ user }}{% endblock %}
-{% block body %}
+{% extends "layout.html" %} {% set active_page = 'stats' %} {% block title %}Profile - {{ user }}{% endblock %} {% block body %}
 <div id="userprofile">
     <h2>User Profile - {{ user }}</h2>
     <div class="mediumtable">
-        <table class="ui very basic table celled">
+        <table class="ui very basic table celled inverted">
             <tbody>
                 <tr>
                     <td><strong>Username</strong></td>
@@ -18,20 +15,9 @@
                 <tr>
                     <td><strong>Level</strong></td>
                     <td>
-                        {% if user.level < 250 %}
-                        User
-                        {% elif user.level < 500 %}
-                        Dank Helper
-                        {% elif user.level < 1000 %}
-                        Moderator
-                        {% elif user.level < 1500 %}
-                        Super Moderator/Broadcaster
-                        {% elif user.level < 2500 %}
-                        Admin
-                        {% else %}
-                        ???
-                        {% endif %} ({{ user.level }})
-                    </td>
+                        {% if user.level
+                        < 250 %} User {% elif user.level < 500 %} Dank Helper {% elif user.level < 1000 %} Moderator {% elif user.level < 1500 %} Super Moderator/Broadcaster {% elif user.level < 2500 %} Admin {% else %} ??? {% endif %}
+                            ({{ user.level }}) </td>
                 </tr>
                 <tr>
                     <td><strong>Points</strong></td>
@@ -110,29 +96,25 @@
                     <td><strong>Longest Win Streak</strong></td>
                     <td>{{ user.duel_stats.longest_winstreak }}</td>
                 </tr>
-                {% endif %}
-                {% if user.duel_stats.longest_losestreak > 1 %}
+                {% endif %} {% if user.duel_stats.longest_losestreak > 1 %}
                 <tr>
                     <td><strong>Longest Lose Streak</strong></td>
                     <td>{{ user.duel_stats.longest_losestreak }}</td>
                 </tr>
-                {% endif %}
-                {% if user.duel_stats.current_streak > 1 %}
+                {% endif %} {% if user.duel_stats.current_streak > 1 %}
                 <tr>
                     <td><strong>Current Win Streak</strong></td>
                     <td>{{ user.duel_stats.current_streak }}</td>
                 </tr>
-                {% elif user.duel_stats.current_streak < -1 %}
-                <tr>
+                {% elif user.duel_stats.current_streak
+                < -1 %} <tr>
                     <td><strong>Current Lose Streak</strong></td>
                     <td>{{ user.duel_stats.current_streak|abs }}</td>
-                </tr>
-                {% endif %}
+                    </tr>
+                    {% endif %}
             </tbody>
         </table>
-        {% endif %}
-
-        {% if roulette_stats %}
+        {% endif %} {% if roulette_stats %}
         <h3>Roulette stats</h3>
         <table class="ui very basic table collapsing">
             <tbody>
@@ -161,22 +143,19 @@
                     <td>{{ roulette_stats.biggest_losestreak }}</td>
                 </tr>
                 {% if roulette_stats.biggest_win != 0 %}
-                    <tr>
-                        <td><strong>Biggest win</strong></td>
-                        <td><span class="points positive">{{ roulette_stats.biggest_win}}</span></td>
-                    </tr>
-                {% endif %}
-                {% if roulette_stats.biggest_loss != 0 %}
-                    <tr>
-                        <td><strong>Biggest loss</strong></td>
-                        <td><span class="points negative">{{ roulette_stats.biggest_loss}}</span></td>
-                    </tr>
+                <tr>
+                    <td><strong>Biggest win</strong></td>
+                    <td><span class="points positive">{{ roulette_stats.biggest_win}}</span></td>
+                </tr>
+                {% endif %} {% if roulette_stats.biggest_loss != 0 %}
+                <tr>
+                    <td><strong>Biggest loss</strong></td>
+                    <td><span class="points negative">{{ roulette_stats.biggest_loss}}</span></td>
+                </tr>
                 {% endif %}
             </tbody>
         </table>
-        {% endif %}
-
-        {% if roulettes|length > 0 %}
+        {% endif %} {% if roulettes|length > 0 %}
         <h3>Roulette history</h3>
         <table class="ui very basic table collapsing">
             <thead>

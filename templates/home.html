@@ -7,8 +7,8 @@
 {% else %}
 <h4>The stream is currently <strong>OFFLINE</strong>.</h4>
 {% endif %} {% if current_quest %}
-<p><div>Today's quest: <strong>{{ current_quest.NAME }}</strong></div>
-<div>{{ current_quest.get_objective() }}</div></p>
+<div><p>Today's quest: <strong>{{ current_quest.NAME }}</strong></p></div>
+<div><p>{{ current_quest.get_objective() }}</p></div>
 {% endif %}
 <hr />
 <p>

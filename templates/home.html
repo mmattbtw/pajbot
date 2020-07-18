@@ -6,7 +6,12 @@
 <h4>The stream is currently <strong><a href="http://twitch.tv/{{ streamer.full_name }}">LIVE</a></strong> with <strong>{{ stream_data['viewers']}}</strong> viewers ({{ stream_data['game'] }}).</h4>
 {% else %}
 <h4>The stream is currently <strong>OFFLINE</strong>.</h4>
-{% endif %} {% if current_quest %}
+{% endif %}
+{% if self.streamer == "griphthefrog" %}
+<p>Griph is currently in hospital</p><img src="https://i.nuuls.com/xXIfw.png" alt="Sadge">
+<p>He will be back soon!</p><img src="https://i.nuuls.com/x_cKU.png" alt="Okayge">
+{% endif %}
+{% if current_quest %}
 <div><p>Today's quest: <strong>{{ current_quest.NAME }}</strong></p></div>
 <div><p>{{ current_quest.get_objective() }}</p></div>
 {% endif %}

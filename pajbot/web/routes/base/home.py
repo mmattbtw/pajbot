@@ -9,7 +9,7 @@ from pajbot.streamhelper import StreamHelper
 log = logging.getLogger(__name__)
 
 
-def init(self, app):
+def init(app):
     @app.route("/")
     def home():
         custom_content = ""
@@ -23,7 +23,7 @@ def init(self, app):
         stream_data = {keys[x]: stream_data_list[x] for x in range(0, len(keys))}
 
         keys = StreamHelper.social_keys
-        broadcaster = self.bot.self.streamer
+        broadcaster = StreamHelper.streamer
         streamer_info_keys = [f"{streamer}:{key}" for key in keys.keys()]
         log.info(streamer_info_keys)
         streamer_info_list = redis.hmget("streamer_info", streamer_info_keys)

@@ -1,6 +1,3 @@
-<script>
-    var broadcaster = '{{ broadcaster }}';
-</script>
 {% extends "layout.html" %} {% set active_page = 'home' %} {% block title %}Home{% endblock %} {% block body %}
 <h4>
     This is the website for <strong>{{ bot.name }}</strong> that moderates <a href="http://twitch.tv/{{ streamer.full_name }}">{{ streamer.name }}'s</a> channel.
@@ -10,7 +7,7 @@
 {% else %}
 <h4>The stream is currently <strong>OFFLINE</strong>.</h4>
 {% endif %}
-{% if {{ broadcaster }} == "griphthefrog" %}
+{% if {{ streamer.full_name }} == "griphthefrog" %}
 <p>Griph is currently in hospital</p><img src="https://i.nuuls.com/xXIfw.png" alt="Sadge">
 <p>He will be back soon!</p><img src="https://i.nuuls.com/x_cKU.png" alt="Okayge">
 {% endif %}

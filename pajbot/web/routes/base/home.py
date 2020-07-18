@@ -23,7 +23,6 @@ def init(app):
         stream_data = {keys[x]: stream_data_list[x] for x in range(0, len(keys))}
 
         keys = StreamHelper.social_keys
-        broadcaster = StreamHelper.streamer
         streamer_info_keys = [f"{streamer}:{key}" for key in keys.keys()]
         log.info(streamer_info_keys)
         streamer_info_list = redis.hmget("streamer_info", streamer_info_keys)
@@ -52,5 +51,4 @@ def init(app):
             current_quest=current_quest,
             stream_data=stream_data,
             streamer_info=streamer_info,
-            broadcaster=broadcaster,
         )

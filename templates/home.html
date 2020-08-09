@@ -16,9 +16,9 @@
 {% endif %}
 <hr />
 <p>
-    {% for social in streamer_info %}
-    <a href="{{ streamer_info[social].value }}"><i class="icon {{social}}"></i>{{streamer_info[social].title}}</a>&emsp;
-    {% endfor %}
+{% for social in streamer_info %}
+<a href="{{ streamer_info[social].value }}"><i class="icon {{social}}"></i>{{streamer_info[social].title}}</a>&emsp;
+{% endfor %}
 </p>
 {% if streamer.full_name == 'griphthefrog' %}
 <p>Griph is currently in hospital <img src="https://cdn.betterttv.net/emote/5e0fa9d40550d42106b8a489/1x" alt="Sadge"></p>

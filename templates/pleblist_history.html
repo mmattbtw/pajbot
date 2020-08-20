@@ -18,16 +18,16 @@
 
 <h2>Pleblist History - {{ stream.title }}</h2>
 
-<div class="ui vertical">Stream started: {{ stream.stream_start|localize }}</div>
+<div class="ui vertical"><p>Stream started: {{ stream.stream_start|localize }}</p></div>
 {% if stream.stream_end is none %}
-    <div class="ui vertical">Stream uptime: {{ stream.stream_start|time_ago }}</div>
-    <div class="ui vertical">Time left on pleblist: {{ total_length_left|time_ago_timespan_seconds }}</div>
+    <div class="ui vertical"><p>Stream uptime: {{ stream.stream_start|time_ago }}</p></div>
+    <div class="ui vertical"><p>Time left on pleblist: {{ total_length_left|time_ago_timespan_seconds }}</p></div>
     {% if first_unplayed_song %}
         <div class="ui vertical"><h5><a href="#current"><i class="icon linkify black"></i></a>Current song: <strong>{{ first_unplayed_song[1].song_info.title }}</strong> (<a href="https://youtu.be/{{ first_unplayed_song[1].youtube_id}}">LINK</a>)</h4></div>
     {% endif %}
 {% else %}
-    <div class="ui vertical">Stream ended: {{ stream.stream_end|localize }}</div>
-    <div class="ui vertical">Stream lasted for: {{ stream.stream_end|time_diff(stream.stream_start) }}</div>
+    <div class="ui vertical"><p>Stream ended: {{ stream.stream_end|localize }}</p></div>
+    <div class="ui vertical"><p>Stream lasted for: {{ stream.stream_end|time_diff(stream.stream_start) }}</p></div>
 {% endif %}
 
 <div id="songhistory" class="ui list celled">

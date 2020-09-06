@@ -4,12 +4,16 @@
 
 Remember to bring your dependencies up to date with `./scripts/venvinstall.sh` when updating to this version!
 
+- Minor: Added settings to change command name and cooldowns for showemote module. (#1007)
 - Minor: Removed excess message in whisper for paid timeout module. (#993)
 - Minor: Move the streamer image resizing to the css file. Also added a rounded border to it. (#992)
+- Minor: Added user-specific cooldown to playsound module (#888, #1006)
 - Bugfix: Paid timeouts will now only timeout once. (#993)
 - Bugfix: Handle new format of P&SL lists (#988, #989)
 - Bugfix: Fixed league rank module not working at all. (#990)
 - Bugfix: Handle new format of P&SL lists (#988, #989, #994)
+- Bugfix: Fixed name of "get timed out" quest. (It just said "Quest" before) (#1003)
+- Bugfix: Added proper error handling to P&SL module. (#991, #1005)
 
 ## v1.47
 

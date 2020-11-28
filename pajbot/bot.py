@@ -40,7 +40,6 @@ from pajbot.migration.redis import RedisMigratable
 from pajbot.models.action import ActionParser
 from pajbot.models.banphrase import BanphraseManager
 from pajbot.models.module import ModuleManager
-from pajbot.models.pleblist import PleblistManager
 from pajbot.models.sock import SocketManager
 from pajbot.models.stream import StreamManager
 from pajbot.models.timer import TimerManager
@@ -387,19 +386,6 @@ class Bot:
         except:
             log.exception("Unhandled exception in get_time_value")
 
-        return None
-
-    def get_current_song_value(self, key, extra={}):
-        if self.stream_manager.online:
-            current_song = PleblistManager.get_current_song(self.stream_manager.current_stream.id)
-            inner_keys = key.split(".")
-            val = current_song
-            for inner_key in inner_keys:
-                val = getattr(val, inner_key, None)
-                if val is None:
-                    return None
-            if val is not None:
-                return val
         return None
 
     def get_strictargs_value(self, key, extra={}):

@@ -82,7 +82,6 @@ tb:message - String - message after the command
 Data from `self.data`:
 tb:version_brief - String - '1.30'
 tb:bot_name - String - 'BotFactory'
-tb:broadcaster - String - 'infinitegachi'
 tb:version - String - '1.30 DEV (master, 8ceb7235, commit 1629)'
 tb:bot_domain - String - Returns the domain specified in the config file
 tb:streamer_display - String - Returns the capitalized streamer name specified in the config file

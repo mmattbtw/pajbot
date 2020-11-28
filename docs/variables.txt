@@ -180,24 +180,6 @@ last_stream:stream_end - datetime.datetime
 last_stream:ended - bool - if that stream has ended (True)
 last_stream:uptime - datetime.timedelta - how long the stream was live
 
-current_song
-============
-(only works when online!)
-current_song:id - int
-current_song:stream_id - int
-current_song:user_id - int
-current_song:youtube_id - String
-current_song:link - String - 'youtu.be/<id>'
-current_song:date_added - datetime.datetime
-current_song:date_played - datetime.datetime
-current_song:skip_after - int
-current_song:song_info - pajbot.models.pleblist.PleblistSongInfo
- -> pleblist_song_youtube_id - String
- -> title - String
- -> duration - int
- -> default_thumbnail - String
-Use these sub-variables like this: $(current_song:song_info.title)
-
 args
 ====
 Note: argument IDs are 0-based!

@@ -5,9 +5,8 @@ import logging
 from pajbot.managers.adminlog import AdminLogManager
 from pajbot.managers.db import DBManager
 from pajbot.managers.handler import HandlerManager
-from pajbot.models.command import Command
-from pajbot.models.command import CommandExample
-from pajbot.modules.base import BaseModule
+from pajbot.models.command import Command, CommandExample
+from pajbot.modules.base import BaseModule, ModuleType
 
 log = logging.getLogger(__name__)
 
@@ -18,6 +17,8 @@ class BanphraseModule(BaseModule):
     NAME = "Banphrases"
     DESCRIPTION = "Looks at each message for banned phrases, and takes actions accordingly"
     ENABLED_DEFAULT = True
+    HIDDEN = True
+    MODULE_TYPE = ModuleType.TYPE_ALWAYS_ENABLED
     CATEGORY = "Moderation"
     SETTINGS: List[Any] = []
 

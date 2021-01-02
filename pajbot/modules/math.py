@@ -89,6 +89,7 @@ class MathModule(BaseModule):
             delay_all=self.settings["online_global_cd"],
             delay_user=self.settings["online_user_cd"],
             description="Calculate some simple math",
+            run_through_banphrases=True,
             examples=[],
         )
 

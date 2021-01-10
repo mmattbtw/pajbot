@@ -89,7 +89,6 @@ class MathModule(BaseModule):
             delay_all=self.settings["online_global_cd"],
             delay_user=self.settings["online_user_cd"],
             description="Calculate some simple math",
-            run_through_banphrases=True,
             examples=[],
         )
 
@@ -129,7 +128,7 @@ class MathModule(BaseModule):
         except:
             pass
 
-        bot.say(f"{source}, {expr_res} {emote}")
+        bot.safe_privmsg(f"{source}, {expr_res} {emote}")
 
     def math(self, bot, source, message, **rest):
         if message:

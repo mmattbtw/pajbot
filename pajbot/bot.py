@@ -388,6 +388,13 @@ class Bot:
 
         return None
 
+    def get_date_value(self, key, extra={}):
+        try:
+            tz = timezone(key)
+            return datetime.datetime.now(tz).strftime("%Y-%m-%d")
+        except:
+            log.exception("Unhandled exception in get_date_value")
+
     def get_strictargs_value(self, key, extra={}):
         ret = self.get_args_value(key, extra)
 

@@ -345,7 +345,7 @@ class BingoModule(BaseModule):
         self.active_game = None
 
         self.bot.me(
-            f"{source} won the bingo! {correct_emote_code} was the target. Congrats, {points_reward} points to you PogChamp"
+            f"{source} won the bingo! {correct_emote_code} was the target. Congrats, {points_reward} points to you KomodoHype"
         )
 
     def load_commands(self, **options):

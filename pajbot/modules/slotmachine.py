@@ -66,8 +66,8 @@ class SlotMachineModule(BaseModule):
             label="Won message | Available arguments: {bet}, {points}, {user}, {emotes}, {result}",
             type="text",
             required=True,
-            placeholder="{user} | {emotes} | won {result} points PogChamp",
-            default="{user} | {emotes} | won {result} points PogChamp",
+            placeholder="{user} | {emotes} | won {result} points KomodoHype",
+            default="{user} | {emotes} | won {result} points KomodoHype",
             constraints={"min_str_len": 10, "max_str_len": 400},
         ),
         ModuleSetting(

@@ -48,7 +48,7 @@ class ClipCommandModule(BaseModule):
             type="text",
             required=True,
             placeholder="",
-            default="{source}, New clip PogChamp 👉 {clip}",
+            default="{source}, New clip KomodoHype 👉 {clip}",
             constraints={"min_str_len": 1, "max_str_len": 400},
         ),
         ModuleSetting(

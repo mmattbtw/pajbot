@@ -155,7 +155,7 @@ class PointLotteryModule(BaseModule):
         bot.websocket_manager.emit(
             "notification", {"message": f"{winner} won {self.lottery_points} points in the lottery!"}
         )
-        bot.me(f"The lottery has finished! {winner} won {self.lottery_points} points! PogChamp")
+        bot.me(f"The lottery has finished! {winner} won {self.lottery_points} points! KomodoHype")
 
         winner.points += self.lottery_points
 

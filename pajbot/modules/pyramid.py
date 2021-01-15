@@ -31,8 +31,8 @@ class PyramidModule(BaseModule):
             label="Message for a < 7 pyramid | Available arguments: {user}, {width}, {emote}",
             type="text",
             required=True,
-            placeholder=".me {user} just finished a {width}-width {emote} pyramid! Good job!!! PogChamp //",
-            default=".me {user} just finished a {width}-width {emote} pyramid! Good job!!! PogChamp //",
+            placeholder=".me {user} just finished a {width}-width {emote} pyramid! Good job!!! KomodoHype //",
+            default=".me {user} just finished a {width}-width {emote} pyramid! Good job!!! KomodoHype //",
             constraints={"min_str_len": 10, "max_str_len": 400},
         ),
         ModuleSetting(
@@ -40,8 +40,8 @@ class PyramidModule(BaseModule):
             label="Message for a < 15 pyramid | Available arguments: {user}, {width}, {emote}",
             type="text",
             required=True,
-            placeholder=".me {user} just finished a {width}-width {emote} pyramid! Now that's what I call pyramid-farming Kappa // PogChamp //",
-            default=".me {user} just finished a {width}-width {emote} pyramid! Now that's what I call pyramid-farming Kappa // PogChamp //",
+            placeholder=".me {user} just finished a {width}-width {emote} pyramid! Now that's what I call pyramid-farming Kappa // KomodoHype //",
+            default=".me {user} just finished a {width}-width {emote} pyramid! Now that's what I call pyramid-farming Kappa // KomodoHype //",
             constraints={"min_str_len": 10, "max_str_len": 400},
         ),
         ModuleSetting(

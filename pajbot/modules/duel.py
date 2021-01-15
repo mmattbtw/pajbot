@@ -38,8 +38,8 @@ class DuelModule(BaseModule):
             label="Winner message | Available arguments: {winner}, {loser}",
             type="text",
             required=True,
-            placeholder="{winner} won the duel vs {loser} PogChamp",
-            default="{winner} won the duel vs {loser} PogChamp",
+            placeholder="{winner} won the duel vs {loser} KomodoHype",
+            default="{winner} won the duel vs {loser} KomodoHype",
             constraints={"min_str_len": 10, "max_str_len": 400},
         ),
         ModuleSetting(
@@ -47,8 +47,8 @@ class DuelModule(BaseModule):
             label="Points message | Available arguments: {winner}, {loser}, {total_pot}, {extra_points}",
             type="text",
             required=True,
-            placeholder="{winner} won the duel vs {loser} PogChamp . The pot was {total_pot}, the winner gets their bet back + {extra_points} points",
-            default="{winner} won the duel vs {loser} PogChamp . The pot was {total_pot}, the winner gets their bet back + {extra_points} points",
+            placeholder="{winner} won the duel vs {loser} KomodoHype The pot was {total_pot}, the winner gets their bet back + {extra_points} points",
+            default="{winner} won the duel vs {loser} KomodoHype The pot was {total_pot}, the winner gets their bet back + {extra_points} points",
             constraints={"min_str_len": 10, "max_str_len": 400},
         ),
         ModuleSetting(

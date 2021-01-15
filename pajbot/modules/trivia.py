@@ -220,7 +220,7 @@ class TriviaModule(BaseModule):
             if correct:
                 if self.point_bounty > 0:
                     self.bot.safe_me(
-                        f"{source} got the answer right! The answer was {self.question['answer']} FeelsGoodMan They get {self.point_bounty} points! PogChamp"
+                        f"{source} got the answer right! The answer was {self.question['answer']} FeelsGoodMan They get {self.point_bounty} points! KomodoHype"
                     )
                     source.points += self.point_bounty
                 else:

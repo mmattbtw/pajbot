@@ -28,8 +28,8 @@ class RaidAlertModule(BaseModule):
             label="Raid chat message | Available arguments: {username}, {num_viewers}",
             type="text",
             required=True,
-            placeholder="{username} just raided the channel with {num_viewers} viewers PogChamp",
-            default="{username} just raided the channel with {num_viewers} viewers PogChamp",
+            placeholder="{username} just raided the channel with {num_viewers} viewers KomodoHype",
+            default="{username} just raided the channel with {num_viewers} viewers KomodoHype",
             constraints={"min_str_len": 10, "max_str_len": 400},
         ),
         ModuleSetting(

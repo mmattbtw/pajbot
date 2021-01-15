@@ -68,7 +68,7 @@ class ShowEmoteModule(BaseModule):
             label="Whitelisted emotes (separate by spaces). Leave empty to use the blacklist.",
             type="text",
             required=True,
-            placeholder="i.e. Kappa Keepo PogChamp KKona",
+            placeholder="i.e. Kappa Keepo KomodoHype KKona",
             default="",
         ),
         ModuleSetting(
@@ -76,7 +76,7 @@ class ShowEmoteModule(BaseModule):
             label="Blacklisted emotes (separate by spaces). Leave empty to allow all emotes.",
             type="text",
             required=True,
-            placeholder="i.e. Kappa Keepo PogChamp KKona",
+            placeholder="i.e. Kappa Keepo KomodoHype KKona",
             default="",
         ),
         ModuleSetting(

@@ -21,8 +21,8 @@ class LiveAlertModule(BaseModule):
             label="Message to post when streamer goes live | Available arguments: {streamer}, {game}, {title}",
             type="text",
             required=True,
-            placeholder="{streamer} is now live! PogChamp Streaming {game}: {title}",
-            default="{streamer} is now live! PogChamp Streaming {game}: {title}",
+            placeholder="{streamer} is now live! KomodoHype Streaming {game}: {title}",
+            default="{streamer} is now live! KomodoHype Streaming {game}: {title}",
             constraints={"max_str_len": 400},
         ),
         ModuleSetting(

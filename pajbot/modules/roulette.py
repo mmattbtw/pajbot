@@ -137,7 +137,7 @@ class RouletteModule(BaseModule):
             label="Message to announce rouletting has been enabled after a sub or resub, leave empty to disable message. | Available arguments: {seconds}",
             type="text",
             required=True,
-            default="Rouletting is now allowed for {seconds} seconds! PogChamp",
+            default="Rouletting is now allowed for {seconds} seconds! KomodoHype",
             constraints={"min_str_len": 0, "max_str_len": 300},
         ),
     ]

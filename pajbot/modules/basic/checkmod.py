@@ -30,7 +30,7 @@ class CheckModModule(BaseModule):
             user = source
 
         if user.moderator:
-            bot.say(f"{user} is a moderator PogChamp")
+            bot.say(f"{user} is a moderator KomodoHype")
         else:
             bot.say(f"{user} is not a moderator FeelsBadMan")
 

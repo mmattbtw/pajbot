@@ -211,7 +211,7 @@ class SlotMachineModule(BaseModule):
             label="Message to announce the allowance of slotmachine usage after re/sub, leave empty to disable the message. | Available arguments: {seconds}",
             type="text",
             required=True,
-            default="Slot machine is now allowed for {seconds} seconds! PogChamp",
+            default="Slot machine is now allowed for {seconds} seconds! KomodoHype",
             constraints={"min_str_len": 0, "max_str_len": 300},
         ),
     ]

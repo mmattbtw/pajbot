@@ -390,6 +390,17 @@ class Bot:
         except:
             log.exception("Unhandled exception in get_date_value")
 
+    def get_datetimefromisoformat_value(self, key, extra={}):
+        try:
+            dt = datetime.datetime.fromisoformat(key)
+            if dt.tzinfo is None:
+                # The date format passed through in key did not contain a timezone, so we replace it with UTC
+                dt = dt.replace(tzinfo=datetime.timezone.utc)
+
+            return dt
+        except:
+            log.exception("Unhandled exception in get_datetimefromisoformat_value")
+
     def get_strictargs_value(self, key, extra={}):
         ret = self.get_args_value(key, extra)
 
@@ -883,6 +894,7 @@ class Bot:
             else utils.time_since(var * 60, 0, time_format="long"),
             "time_since": lambda var, args: "no time" if var == 0 else utils.time_since(var, 0, time_format="long"),
             "time_since_dt": _filter_time_since_dt,
+            "timedelta_days": _filter_timedelta_days,
             "urlencode": _filter_urlencode,
             "join": _filter_join,
             "number_format": _filter_number_format,
@@ -921,6 +933,14 @@ def _filter_time_since_dt(var, args):
         return "never FeelsBadMan ?"
 
 
+def _filter_timedelta_days(var, args):
+    try:
+        td = utils.now() - var
+        return str(td.days)
+    except:
+        return "0"
+
+
 def _filter_join(var, args):
     try:
         separator = args[0]
@@ -952,28 +972,40 @@ def lowercase_first_letter(s):
 
 def _filter_add(var, args):
     try:
-        return str(int(var) + int(args[0]))
+        lh = utils.parse_number_from_string(var)
+        rh = utils.parse_number_from_string(args[0])
+
+        return str(lh + rh)
     except:
         return ""
 
 
 def _filter_subtract(var, args):
     try:
-        return str(int(var) - int(args[0]))
+        lh = utils.parse_number_from_string(var)
+        rh = utils.parse_number_from_string(args[0])
+
+        return str(lh - rh)
     except:
         return ""
 
 
 def _filter_multiply(var, args):
     try:
-        return str(int(var) * int(args[0]))
+        lh = utils.parse_number_from_string(var)
+        rh = utils.parse_number_from_string(args[0])
+
+        return str(lh * rh)
     except:
         return ""
 
 
 def _filter_divide(var, args):
     try:
-        return str(int(var) / int(args[0]))
+        lh = utils.parse_number_from_string(var)
+        rh = utils.parse_number_from_string(args[0])
+
+        return str(lh / rh)
     except:
         return ""
 

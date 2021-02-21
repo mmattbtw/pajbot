@@ -70,7 +70,7 @@ class PNSLModule(BaseModule):
         base_url = "https://bot.tetyys.com/api/v1/BotLists"
 
         if not self.pnsl_token:
-            bot.whisper(source, f"Missing P&SL token in config.ini. talk to @{bot.admin} BabyRage")
+            bot.whisper(source, "Cannot run P&SL, token is missing in the config.")
             return False
 
         guid = message.replace("https://bot.tetyys.com/BotList/", "").replace(

@@ -135,6 +135,7 @@ class Bot:
         if self.broadcaster is None:
             raise ValueError("The streamer login name you entered under [main] does not exist on twitch.")
 
+        self.broadcaster.level = 1500
         self.streamer_user_id = self.broadcaster.id
 
         self.streamer_access_token_manager = UserAccessTokenManager(

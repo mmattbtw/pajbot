@@ -133,7 +133,7 @@ class Bot:
 
         self.broadcaster = self.twitch_helix_api.get_user_basics_by_login(self.streamer)
         if self.broadcaster is None:
-            log.warning("The streamer login name you entered under [main] does not exist on twitch.")
+            raise ValueError("The streamer login name you entered under [main] does not exist on twitch.")
         else:
             with DBManager.create_session_scope() as db_session:
                 broadcaster_user = User.find_or_create_from_login(db_session, self.twitch_helix_api, self.broadcaster)

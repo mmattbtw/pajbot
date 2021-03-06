@@ -183,7 +183,7 @@ function handle_command(base_key, command) {
                             chat_html += '<span class="separator">:</span> ';
                             chat_html +=
                                 '<span class="message autolink">' +
-                                message.message +
+                                _.escape(message.message) +
                                 '</span>';
                             chat_html += '</div>';
                             chat_html += '</div>';

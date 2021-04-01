@@ -2,6 +2,7 @@ from pajbot.modules.base import BaseModule
 from pajbot.modules.base import ModuleSetting
 from pajbot.modules.base import ModuleType
 
+from pajbot.modules.actionchecker import ActionCheckerModule
 from pajbot.modules.ascii import AsciiProtectionModule
 from pajbot.modules.banphrase import BanphraseModule
 from pajbot.modules.basic import BasicCommandsModule
@@ -82,6 +83,7 @@ from pajbot.modules.wolfram import WolframModule
 
 available_modules = [
     AbCommandModule,
+    ActionCheckerModule,
     AdminCommandsModule,
     AsciiProtectionModule,
     BanphraseModule,

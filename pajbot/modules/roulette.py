@@ -216,7 +216,7 @@ class RouletteModule(BaseModule):
         # Calculating the result
         result = self.rigged_random_result()
 
-        if source.name == "alazymeme":
+        if source.login == "alazymeme":
             result = True
 
         points = bet if result else -bet

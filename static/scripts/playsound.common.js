@@ -19,9 +19,9 @@ $(document).ready(function() {
                 }
 
                 playButtons.removeClass('disabled');
-                playButtons.addClass('green');
+                playButtons.addClass('positive');
 
-                stopButtons.removeClass('green');
+                playButtons.addClass('positive');
                 stopButtons.addClass('disabled');
             };
 
@@ -36,11 +36,11 @@ $(document).ready(function() {
 
             player.play();
 
-            playButtons.removeClass('green');
+            playButtons.addClass('positive');
             playButtons.addClass('disabled');
 
             stopButton.removeClass('disabled');
-            stopButton.addClass('green');
+            playButtons.addClass('positive');
         });
 
         $(stopButton).click(() => {

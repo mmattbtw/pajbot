@@ -128,7 +128,7 @@ class MathModule(BaseModule):
         except:
             pass
 
-        bot.safe_privmsg(f"{source}, {expr_res} {emote}")
+        bot.say(f"{source}, {expr_res} {emote}")
 
     def math(self, bot, source, message, **rest):
         if message:

@@ -103,7 +103,7 @@
                 <input autocomplete="off" type="url" name="link" class="link-input middle-input"
                        placeholder="New playsound link"
                        style="width: 300px;" required>
-                <button class="ui button green inverted" id="#create-playsound-button" type="submit">Create Playsound</button>
+                <button class="ui button positive inverted" id="#create-playsound-button" type="submit">Create Playsound</button>
             </form>
         </div>
     </div>
@@ -139,7 +139,7 @@
                                  data-name="{{ playsound.name }}"
                                  data-link="{{ playsound.link }}"
                                  data-volume="{{ playsound.volume }}">
-                                <button class="green inverted play-in-browser-play ui icon button compact">
+                                <button class="positive inverted play-in-browser-play ui icon button compact">
                                     <i class="play circle outline icon"></i>
                                     Test in browser
                                 </button>
@@ -179,10 +179,10 @@
                 <td>
                     <div class="actions-buttons-container">
                         <button form="form-{{ playsound.name }}"
-                                class="playsound-submit-save ui compact green inverted button" type="submit">Save
+                                class="playsound-submit-save ui compact positive inverted button" type="submit">Save
                         </button>
                         <button form="form-{{ playsound.name }}"
-                                class="playsound-submit-delete ui compact red inverted button" type="button">Delete
+                                class="playsound-submit-delete ui compact negative inverted button" type="button">Delete
                         </button>
                     </div>
                 </td>
@@ -199,11 +199,11 @@
             <p>Please confirm you want to delete that playsound. This action is irreversible.</p>
         </div>
         <div class="actions">
-            <div class="ui red inverted right labeled icon button">
+            <div class="ui negative inverted right labeled icon button">
                 No, Don't delete
                 <i class="close icon"></i>
             </div>
-            <div class="ui green inverted right labeled icon button">
+            <div class="ui positive inverted right labeled icon button">
                 Yes, delete
                 <i class="checkmark icon"></i>
             </div>

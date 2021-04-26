@@ -106,13 +106,13 @@ $(window).on('load', function() {
 
     function resultFeedback(success, text) {
         // reset state...
-        messageBox.removeClass('hidden green red');
+        messageBox.removeClass('hidden positive negative');
 
         // then update element.
         if (success) {
-            messageBox.addClass('green');
+            messageBox.addClass('positive');
         } else {
-            messageBox.addClass('red');
+            messageBox.addClass('negative');
         }
         messageText.text(text);
     }

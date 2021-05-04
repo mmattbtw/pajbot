@@ -69,6 +69,10 @@
                     {% endif %}
                 </tr>
                 <tr>
+                    <td><strong>Logs</strong></td>
+                    <td><a href="https://www.twitch.tv/popout/{{ streamer.full_name }}/viewercard/{{ user.login }}">Twitch Mod Logs</a> | <a href="https://logs.ivr.fi/?channe={{ streamer.full_name }}&user={{ user.login }}">IVR Logs</a></td>
+                </tr>
+                <tr>
                     <td><strong>Permabanned on {{ bot.name }}</strong></td>
                     <td>{%if user.banned %}Yes{% else %}No{% endif %}</td>
                 </tr>

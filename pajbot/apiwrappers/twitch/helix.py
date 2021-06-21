@@ -606,3 +606,22 @@ class TwitchHelixAPI(BaseTwitchAPI):
             expiry=60 * 60,
             force_fetch=force_fetch,
         )
+
+    def get_channel_stream_schedule(self, broadcaster_id, authorization, utc_offset=0):
+        response = self.get(
+            "/schedule", {"broadcaster_id": broadcaster_id, "utc_offset": utc_offset}, authorization=authorization
+        )
+        data = response["data"][0]
+        segments = data["segments"][0]
+        start_time = segments["start_time"]
+        end_time = segments["end_time"]
+        title = segments["title"]
+        category = segments["category"][0]["name"]
+        seconds_until_start = int((start_time - utils.now()).total_seconds()) - 1
+        seconds_until_end = int((end_time - utils.now()).total_seconds()) - 1
+
+        if data["vacation"] is not None:
+            vacation_start_time = self.parse_datetime(data["vacation"][0]["start_time"])
+            vacation_end_time = self.parse_datetime(data["vacation"][0]["end_time"])
+
+        return start_time, end_time, title, category, seconds_until_start, seconds_until_end, vacation_start_time, vacation_end_time

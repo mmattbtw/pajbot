@@ -325,7 +325,7 @@ class RaffleModule(BaseModule):
                     "notification", {"message": f"{winner} {format_win(self.raffle_points)} points in the raffle!"}
                 )
 
-            self.bot.me(f"The raffle has finished! {winner} {format_win(self.raffle_points)} points! KomodoHype")
+            self.bot.me(f"The raffle has finished! {winner} {format_win(self.raffle_points)} points! PogChamp")
 
             winner.points += self.raffle_points
 
@@ -435,10 +435,10 @@ class RaffleModule(BaseModule):
             self.raffle_users = set()
 
             if num_winners == 1:
-                self.bot.me(f"The multi-raffle has finished! 1 user {format_win(points_per_user)} points! KomodoHype")
+                self.bot.me(f"The multi-raffle has finished! 1 user {format_win(points_per_user)} points! PogChamp")
             else:
                 self.bot.me(
-                    f"The multi-raffle has finished! {num_winners} users {format_win(points_per_user)} points each! KomodoHype"
+                    f"The multi-raffle has finished! {num_winners} users {format_win(points_per_user)} points each! PogChamp"
                 )
 
             winners_arr = []

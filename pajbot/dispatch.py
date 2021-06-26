@@ -396,7 +396,7 @@ class Dispatch:
             user = source
 
         if user.subscriber:
-            bot.say(f"{user} is a subscriber KomodoHype")
+            bot.say(f"{user} is a subscriber PogChamp")
         else:
             bot.say(f"{user} is not a subscriber FeelsBadMan")
 

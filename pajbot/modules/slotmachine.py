@@ -67,8 +67,8 @@ class SlotMachineModule(BaseModule):
             label="Won message | Available arguments: {bet}, {points}, {user}, {emotes}, {result}",
             type="text",
             required=True,
-            placeholder="{user} | {emotes} | won {result} points KomodoHype",
-            default="{user} | {emotes} | won {result} points KomodoHype",
+            placeholder="{user} | {emotes} | won {result} points PogChamp",
+            default="{user} | {emotes} | won {result} points PogChamp",
             constraints={"min_str_len": 10, "max_str_len": 400},
         ),
         ModuleSetting(
@@ -211,7 +211,7 @@ class SlotMachineModule(BaseModule):
             label="Message to announce the allowance of slotmachine usage after re/sub, leave empty to disable the message. | Available arguments: {seconds}",
             type="text",
             required=True,
-            default="Slot machine is now allowed for {seconds} seconds! KomodoHype",
+            default="Slot machine is now allowed for {seconds} seconds! PogChamp",
             constraints={"min_str_len": 0, "max_str_len": 300},
         ),
     ]

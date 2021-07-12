@@ -43,10 +43,8 @@ def find_youtube_id_in_string(string):
 
 
 class PleblistModule(BaseModule):
-
     # TODO: Submodule for !song command
     # Should !songrequest be a submodule in itself? Maybe.
-
     ID = __name__.split(".")[-1]
     NAME = "Song Requests"
     DESCRIPTION = ""
@@ -83,7 +81,7 @@ class PleblistModule(BaseModule):
             type="number",
             required=True,
             default=500,
-            constraints={"min_value": 0, "max_value": 250000},
+            constraints={"min_value": 0, "max_value": 1000000},
         ),
     ]
 

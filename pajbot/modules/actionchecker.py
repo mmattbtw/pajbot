@@ -68,7 +68,7 @@ class ActionCheckerModule(BaseModule):
             required=True,
             placeholder="Timeout length in seconds",
             default=30,
-            constraints={"min_value": 30, "max_value": 3600},
+            constraints={"min_value": 1, "max_value": 1209600},
         ),
         ModuleSetting(
             key="bypass_level",
@@ -100,7 +100,8 @@ class ActionCheckerModule(BaseModule):
         if event.type == "action" and self.settings["disallow_action_messages"] is True:
             self.delete_or_timeout(source, msg_id, self.settings["disallow_timeout_reason"])
             return False
-        elif event.type != "action" and self.settings["only_allow_action_messages"] is True:
+
+        if event.type != "action" and self.settings["only_allow_action_messages"] is True:
             self.delete_or_timeout(source, msg_id, self.settings["allow_timeout_reason"])
             return False
 

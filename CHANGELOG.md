@@ -4,7 +4,14 @@
 
 Remember to bring your dependencies up to date with `./scripts/venvinstall.sh` when updating to this version!
 
-- Minor: Added option to disable timeouts in the ASCII Protection module. (#1361)
+- Minor: Added optional warning support to the actionchecker module. (#1362)
+- Minor: Added optional warning support to the casechecker module. (#1365)
+- Minor: Added optional warning support to the emote_limit module. (#1366)
+- Minor: Added optional warning support to the emote_timeout module. (#1367)
+- Minor: Added optional warning support to the repspam module. (#1370)
+- Minor: Added optional warning support to the linkchecker module. (#1368)
+- Minor: Added option to disable warnings in the maxmsglength module. (#1369)
+- Minor: Added option to disable warnings in the ASCII Protection module. (#1361)
 - Minor: Changed the timeout length limits for the ASCII Protection module from [30s,1hr] to [1s,2w]. (#1353)
 - Minor: Changed the timeout length limits for the Emote Limit module from [3s,1hr] to [1s,2w]. (#1355)
 - Minor: Increased the maximum emote limit for the Emote Limit module from 40 to 167. (#1355)

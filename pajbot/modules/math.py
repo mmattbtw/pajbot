@@ -83,14 +83,6 @@ class MathModule(BaseModule):
             default=6,
             constraints={"min_value": 0, "max_value": 240},
         ),
-        ModuleSetting(
-            key="response_method",
-            label="Method of response to command usage",
-            type="options",
-            required=True,
-            default="say",
-            options=["say", "whisper", "reply"],
-        ),
     ]
 
     def load_commands(self, **options):
@@ -138,7 +130,7 @@ class MathModule(BaseModule):
         except:
             pass
 
-        bot.send_message_to_user(source, f"{expr_res} {emote}", event, method=self.settings["response_method"])
+        bot.safe_say(f"{expr_res} {emote}")
 
     def math(self, bot, event, source, message, **rest):
         if message:

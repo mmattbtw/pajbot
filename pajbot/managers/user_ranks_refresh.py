@@ -27,6 +27,7 @@ class UserRanksRefreshManager:
     @staticmethod
     @time_method
     def _refresh(action_queue):
+        return
         try:
             with DBManager.create_dbapi_cursor_scope(autocommit=True) as cursor:
                 cursor.execute("REFRESH MATERIALIZED VIEW CONCURRENTLY user_rank")

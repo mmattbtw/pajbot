@@ -582,6 +582,15 @@ class Bot:
     def execute_every(self, period, function, *args, **kwargs):
         self.reactor.scheduler.execute_every(period, lambda: function(*args, **kwargs))
 
+    def _has_moderation_actions(self) -> bool:
+        """this returns True if the moderation_actions value
+        is set on the given thread, and if it's something other than None,
+        i.e. if the timeout is running inside a new_message_processing_scope context"""
+
+        if "moderation_actions" not in self.thread_locals.__dict__:
+            return False
+        return self.thread_locals.moderation_actions is not None
+
     def _ban(self, login, reason=None):
         message = f"/ban {login}"
         if reason is not None:
@@ -592,7 +601,7 @@ class Bot:
         self.ban_login(user.login, reason)
 
     def ban_login(self, login: str, reason=None):
-        if self.thread_locals.moderation_actions is not None:
+        if self._has_moderation_actions():
             self.thread_locals.moderation_actions.add(login, Ban(reason))
         else:
             self.timeout_login(login, 30, reason, once=True)
@@ -602,7 +611,7 @@ class Bot:
         self.unban_login(user.login)
 
     def unban_login(self, login: str):
-        if self.thread_locals.moderation_actions is not None:
+        if self._has_moderation_actions():
             self.thread_locals.moderation_actions.add(login, Unban())
         else:
             self.privmsg(f"/unban {login}")
@@ -611,7 +620,7 @@ class Bot:
         self.untimeout_login(user.login)
 
     def untimeout_login(self, login: str):
-        if self.thread_locals.moderation_actions is not None:
+        if self._has_moderation_actions():
             self.thread_locals.moderation_actions.add(login, Untimeout())
         else:
             self.privmsg(f"/untimeout {login}")
@@ -626,7 +635,7 @@ class Bot:
         self.timeout_login(user.login, duration, reason, once)
 
     def timeout_login(self, login: str, duration: int, reason=None, once=False):
-        if self.thread_locals.moderation_actions is not None:
+        if self._has_moderation_actions():
             self.thread_locals.moderation_actions.add(login, Timeout(duration, reason, once))
         else:
             self._timeout(login, duration, reason)
@@ -646,6 +655,16 @@ class Bot:
             self.irc.whisper(user.login, message)
         if self.whisper_output_mode == WhisperOutputMode.CHAT:
             self.privmsg(f"{user}, {message}")
+        if self.whisper_output_mode == WhisperOutputMode.CONTROL_HUB:
+            chub = self.config["main"].get("control_hub", None)
+            if chub is not None:
+                self.privmsg(f"{user}, {message}", f"#{chub}")
+            else:
+                log.warning(
+                    "Whisper output mode set to `control_hub` but no control hub configured in config, "
+                    f"the following whisper will not be sent: To {user}: {message}"
+                )
+
         elif self.whisper_output_mode == WhisperOutputMode.DISABLED:
             log.debug(f'Whisper "{message}" to user "{user}" was not sent (due to config setting)')
 
@@ -654,6 +673,15 @@ class Bot:
             self.irc.whisper(login, message)
         if self.whisper_output_mode == WhisperOutputMode.CHAT:
             self.privmsg(f"{login}, {message}")
+        if self.whisper_output_mode == WhisperOutputMode.CONTROL_HUB:
+            chub = self.config["main"].get("control_hub", None)
+            if chub is not None:
+                self.privmsg(f"{login}, {message}", f"#{chub}")
+            else:
+                log.warning(
+                    "Whisper output mode set to `control_hub` but no control hub configured in config, "
+                    f"the following whisper will not be sent: To {login}: {message}"
+                )
         elif self.whisper_output_mode == WhisperOutputMode.DISABLED:
             log.debug(f'Whisper "{message}" to user "{login}" was not sent (due to config setting)')
 

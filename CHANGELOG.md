@@ -4,6 +4,16 @@
 
 Remember to bring your dependencies up to date with `./scripts/venvinstall.sh` when updating to this version!
 
+## v1.57
+
+Remember to bring your dependencies up to date with `./scripts/venvinstall.sh` when updating to this version!
+
+- Minor: Added `!topemotes` command to Top module (#1503)
+- Minor: Added `--disable` and `--enable` command arguments that can be used with `!add command` and `!edit command`. (#1502)
+- Minor: Remove the QueUp module. (#1515)
+- Bugfix: Tweet streaming through Tweet Manager now works again. (#1537)
+- Bugfix: Internal commands now show on the website properly. (#1538)
+
 ## v1.56
 
 Remember to bring your dependencies up to date with `./scripts/venvinstall.sh` when updating to this version!

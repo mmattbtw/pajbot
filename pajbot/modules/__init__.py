@@ -68,7 +68,6 @@ from pajbot.modules.quests.winduels import WinDuelsQuestModule
 from pajbot.modules.quests.winhsbetpoints import WinHsBetPointsQuestModule
 from pajbot.modules.quests.winhsbetwins import WinHsBetWinsQuestModule
 from pajbot.modules.quests.winraffle import WinRaffleQuestModule
-from pajbot.modules.queup import QueUpModule
 from pajbot.modules.raffle import RaffleModule
 from pajbot.modules.repspam import RepspamModule
 from pajbot.modules.roulette import RouletteModule
@@ -134,7 +133,6 @@ available_modules = [
     PredictModule,
     PyramidModule,
     QuestModule,
-    QueUpModule,
     RaffleModule,
     RaidAlertModule,
     RepspamModule,

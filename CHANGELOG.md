@@ -4,6 +4,12 @@
 
 Remember to bring your dependencies up to date with `./scripts/venvinstall.sh` when updating to this version!
 
+## v1.58
+
+Remember to bring your dependencies up to date with `./scripts/venvinstall.sh` when updating to this version!
+
+- Bugfix: Fix non-tweet-manager streaming. (#1544)
+
 ## v1.57
 
 Remember to bring your dependencies up to date with `./scripts/venvinstall.sh` when updating to this version!

@@ -29,12 +29,12 @@ log = logging.getLogger(__name__)
 
 
 def init(args):
-    import bcrypt
     import subprocess
     import sys
 
     from flask import request
     from flask import session
+    from flask_scrypt import generate_random_salt
 
     import pajbot.utils
     import pajbot.web.common
@@ -75,7 +75,7 @@ def init(args):
         sys.exit(1)
 
     if "secret_key" not in config["web"]:
-        salt = bcrypt.gensalt()
+        salt = generate_random_salt()
         config.set("web", "secret_key", salt.decode("utf-8"))
 
         with open(args.config, "w") as configfile:

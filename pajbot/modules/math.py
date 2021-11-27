@@ -95,7 +95,7 @@ class MathModule(BaseModule):
         )
 
     @staticmethod
-    def do_math(bot, message):
+    def do_math(bot, event, source, message):
         expr_res = None
         with time_limit(1):
             try:

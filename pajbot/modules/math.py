@@ -95,7 +95,7 @@ class MathModule(BaseModule):
         )
 
     @staticmethod
-    def do_math(bot, event, source, message):
+    def do_math(bot, message):
         expr_res = None
         with time_limit(1):
             try:
@@ -132,7 +132,7 @@ class MathModule(BaseModule):
 
         bot.safe_say(f"{expr_res} {emote}")
 
-    def math(self, bot, event, source, message, **rest):
+    def math(self, bot, message, **rest):
         if message:
             message = message.replace("pi", str(math.pi))
             message = message.replace("e", str(math.e))
@@ -140,4 +140,4 @@ class MathModule(BaseModule):
             message = message.replace("^", "**")
             message = message.replace(",", ".")
 
-            self.do_math(bot, event, source, message)
+            self.do_math(bot, message)

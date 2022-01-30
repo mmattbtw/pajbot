@@ -2,16 +2,14 @@ import datetime
 import logging
 import math
 
-import rapidfuzz
-
-import requests
-
 from pajbot import utils
 from pajbot.managers.handler import HandlerManager
 from pajbot.managers.schedule import ScheduleManager
 from pajbot.models.command import Command
-from pajbot.modules import BaseModule
-from pajbot.modules import ModuleSetting
+from pajbot.modules import BaseModule, ModuleSetting
+
+import rapidfuzz
+import requests
 
 log = logging.getLogger(__name__)
 
@@ -216,7 +214,7 @@ class TriviaModule(BaseModule):
                 correct = right_answer == user_answer
             else:
                 ratio = rapidfuzz.fuzz.ratio(right_answer, user_answer)
-                correct = ratio >= 0.94
+                correct = ratio >= 94
 
             if correct:
                 if self.point_bounty > 0:

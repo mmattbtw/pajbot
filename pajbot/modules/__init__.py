@@ -1,6 +1,5 @@
-from pajbot.modules.base import BaseModule
-from pajbot.modules.base import ModuleSetting
-from pajbot.modules.base import ModuleType
+# Skip sorting base module due to circular imports
+from pajbot.modules.base import BaseModule, ModuleSetting, ModuleType  # isort:skip
 
 from pajbot.modules.actionchecker import ActionCheckerModule
 from pajbot.modules.ascii import AsciiProtectionModule
@@ -17,6 +16,7 @@ from pajbot.modules.basic.followage import FollowAgeModule
 from pajbot.modules.basic.ignore import IgnoreModule
 from pajbot.modules.basic.permaban import PermabanModule
 from pajbot.modules.basic.pointsreset import PointsResetModule
+from pajbot.modules.basic.selftimeout import SelfTimeoutModule
 from pajbot.modules.basic.stream_update import StreamUpdateModule
 from pajbot.modules.bingo import BingoModule
 from pajbot.modules.casechecker import CaseCheckerModule
@@ -24,8 +24,8 @@ from pajbot.modules.chat_alerts import ChatAlertModule
 from pajbot.modules.chat_alerts.cheeralert import CheerAlertModule
 from pajbot.modules.chat_alerts.livealert import LiveAlertModule
 from pajbot.modules.chat_alerts.newchatteralert import NewChatterAlertModule
-from pajbot.modules.chat_alerts.subalert import SubAlertModule
 from pajbot.modules.chat_alerts.raidalert import RaidAlertModule
+from pajbot.modules.chat_alerts.subalert import SubAlertModule
 from pajbot.modules.chatters_refresh import ChattersRefreshModule
 from pajbot.modules.clr_overlay import CLROverlayModule
 from pajbot.modules.clr_overlay.emotecombo import EmoteComboModule
@@ -35,18 +35,16 @@ from pajbot.modules.deck import DeckModule
 from pajbot.modules.duel import DuelModule
 from pajbot.modules.dummy import DummyModule
 from pajbot.modules.eightball import EightBallModule
-from pajbot.modules.emote_timeout import EmoteTimeoutModule
 from pajbot.modules.emote_limit import EmoteLimitModule
+from pajbot.modules.emote_timeout import EmoteTimeoutModule
 from pajbot.modules.givepoints import GivePointsModule
+from pajbot.modules.global_command_cooldown import GlobalCommandCooldown
 from pajbot.modules.hsbet import HSBetModule
 from pajbot.modules.lastfm import LastfmModule
 from pajbot.modules.leaguerank import LeagueRankModule
 from pajbot.modules.linefarming import LineFarmingModule
-from pajbot.modules.linkchecker import BlacklistedLink
-from pajbot.modules.linkchecker import LinkCheckerModule
-from pajbot.modules.linkchecker import WhitelistedLink
-from pajbot.modules.linktracker import LinkTrackerLink
-from pajbot.modules.linktracker import LinkTrackerModule
+from pajbot.modules.linkchecker import BlacklistedLink, LinkCheckerModule, WhitelistedLink
+from pajbot.modules.linktracker import LinkTrackerLink, LinkTrackerModule
 from pajbot.modules.massping import MassPingProtectionModule
 from pajbot.modules.math import MathModule
 from pajbot.modules.maxmsglength import MaxMsgLengthModule
@@ -110,6 +108,7 @@ available_modules = [
     FollowAgeModule,
     GetTimedOutQuestModule,
     GivePointsModule,
+    GlobalCommandCooldown,
     HSBetModule,
     IgnoreModule,
     LastfmModule,
@@ -139,6 +138,7 @@ available_modules = [
     RaidAlertModule,
     RepspamModule,
     RouletteModule,
+    SelfTimeoutModule,
     ShowEmoteModule,
     SlotMachineModule,
     StreamUpdateModule,

@@ -1,20 +1,18 @@
 import json
 import logging
 
-from flask_restful import Resource
-from flask_restful import reqparse
-from sqlalchemy.orm import joinedload
-
 import pajbot.modules
 import pajbot.utils
 import pajbot.web.utils
 from pajbot.managers.adminlog import AdminLogManager
 from pajbot.managers.db import DBManager
-from pajbot.models.command import Command
-from pajbot.models.command import CommandData
+from pajbot.models.command import Command, CommandData
 from pajbot.models.module import ModuleManager
 from pajbot.models.sock import SocketClientManager
 from pajbot.utils import find
+
+from flask_restful import Resource, reqparse
+from sqlalchemy.orm import joinedload
 
 log = logging.getLogger(__name__)
 
@@ -86,6 +84,7 @@ class APICommandUpdate(Resource):
         self.post_parser.add_argument("data_mod_only", required=False)
         self.post_parser.add_argument("data_action_type", required=False)
         self.post_parser.add_argument("data_action_message", required=False)
+        self.post_parser.add_argument("data_use_global_cd", required=False)
         self.post_parser.add_argument("run_through_banphrases", required=False)
 
     @pajbot.web.utils.requires_level(500)
@@ -104,6 +103,7 @@ class APICommandUpdate(Resource):
             "sub_only",
             "mod_only",
             "run_through_banphrases",
+            "use_global_cd",
         ]
 
         valid_action_names = ["type", "message"]

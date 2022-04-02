@@ -108,8 +108,8 @@ class Bot:
 
         # phrases
         self.phrases = {
-            "welcome": ["{nickname} {version} running! HeyGuys"],
-            "quit": ["{nickname} {version} shutting down... BibleThump"],
+            "welcome": None,
+            "quit": None,
         }
         if "phrases" in config:
             phrases = config["phrases"]
@@ -959,6 +959,9 @@ class Bot:
 
     def on_welcome(self, _conn, _event):
         """Gets triggered on IRC welcome, i.e. when the login is successful."""
+        if self.phrases["welcome"] is None:
+            return
+
         if self.welcome_messages_sent:
             return
 
@@ -1004,7 +1007,6 @@ class Bot:
     def quit_bot(self, **options) -> None:
         self.commit_all()
         HandlerManager.trigger("on_quit")
-        phrase_data = {"nickname": self.bot_user.login, "version": self.version_long}
 
         try:
             if ScheduleManager.base_scheduler:
@@ -1013,11 +1015,13 @@ class Bot:
         except:
             log.exception("Error while shutting down the apscheduler")
 
-        try:
-            for p in self.phrases["quit"]:
-                self.privmsg(p.format(**phrase_data))
-        except Exception:
-            log.exception("Exception caught while trying to say quit phrase")
+        if self.phrases["quit"] is not None:
+            phrase_data = {"nickname": self.bot_user.login, "version": self.version_long}
+            try:
+                for p in self.phrases["quit"]:
+                    self.privmsg(p.format(**phrase_data))
+            except Exception:
+                log.exception("Exception caught while trying to say quit phrase")
 
         self.twitter_manager.quit()
         self.socket_manager.quit()

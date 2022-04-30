@@ -52,9 +52,6 @@ class Dispatch:
         elif response.startswith("/me") or response.startswith(".me"):
             type = "me"
             response = " ".join(response.split(" ")[1:])
-        elif response.startswith("/announce") or response.startswith(".announce"):
-            type = "announcement"
-            response = " ".join(response.split(" ")[1:])
         elif options["whisper"] is False or options["reply"] is False:
             type = "say"
         action = {"type": type, "message": response}
@@ -104,9 +101,6 @@ class Dispatch:
                 type = "reply"
             elif response.startswith("/me") or response.startswith(".me"):
                 type = "me"
-                response = " ".join(response.split(" ")[1:])
-            elif response.startswith("/announce") or response.startswith(".announce"):
-                type = "announcement"
                 response = " ".join(response.split(" ")[1:])
             elif options["whisper"] is False or options["reply"] is False:
                 type = "say"

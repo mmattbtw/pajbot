@@ -30,7 +30,7 @@ from pajbot.managers.deck import DeckManager
 from pajbot.managers.emote import EcountManager, EmoteManager, EpmManager
 from pajbot.managers.handler import HandlerManager
 from pajbot.managers.irc import IRCManager
-from pajbot.managers.kvi import KVIManager
+from pajbot.managers.kvi import KVIManager, parse_kvi_arguments
 from pajbot.managers.redis import RedisManager
 from pajbot.managers.schedule import ScheduleManager
 from pajbot.managers.user_ranks_refresh import UserRanksRefreshManager
@@ -59,6 +59,8 @@ if TYPE_CHECKING:
 log = logging.getLogger(__name__)
 
 SLICE_REGEX = re.compile(r"(-?\d+)?(:?(-?\d+)?)?")
+
+RANDOMCHOICE_ARGUMENT_REGEX = re.compile(r"\"([ \w\.,]*)\"")
 
 
 class Bot:
@@ -311,6 +313,28 @@ class Bot:
     def get_kvi_value(self, key: str, extra: Dict[Any, Any] = {}) -> int:
         return self.kvi[key].get()
 
+    def increase_kvi_value(self, key: str, extra: Dict[Any, Any] = {}) -> int:
+        kvi_key, kvi_amount = parse_kvi_arguments(key)
+        if kvi_key is None:
+            return 0
+
+        try:
+            return self.kvi[kvi_key].inc(amount=kvi_amount)
+        except:
+            log.exception(f"Failed to increase '{kvi_key}' by {kvi_amount}")
+            return 0
+
+    def decrease_kvi_value(self, key: str, extra: Dict[Any, Any] = {}):
+        kvi_key, kvi_amount = parse_kvi_arguments(key)
+        if kvi_key is None:
+            return 0
+
+        try:
+            return self.kvi[kvi_key].dec(amount=kvi_amount)
+        except:
+            log.exception(f"Failed to decrease '{kvi_key}' by {kvi_amount}")
+            return 0
+
     def get_last_tweet(self, key, extra={}) -> str:
         return self.twitter_manager.get_last_tweet(key)
 
@@ -463,6 +487,13 @@ class Bot:
         except:
             log.exception("UNHANDLED ERROR IN get_args_value")
             return ""
+
+    def get_randomchoice_value(self, key: str, extra: Dict[Any, Any] = {}) -> str:
+        arguments = RANDOMCHOICE_ARGUMENT_REGEX.findall(key)
+        if not arguments:
+            return ""
+
+        return random.choice(arguments)
 
     def get_value(self, key, extra={}):
         if key in extra:

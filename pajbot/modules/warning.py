@@ -36,12 +36,4 @@ class WarningModule(BaseModule):
             default=10,
             constraints={"min_value": 5, "max_value": 30},
         ),
-        ModuleSetting(
-            key="redis_prefix",
-            label="Prefix in the redis database. Only touch if you know what you're doing.",
-            type="text",
-            required=True,
-            placeholder="Can be left blank, don't worry!",
-            default="",
-        ),
     ]

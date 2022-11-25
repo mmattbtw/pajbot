@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 import logging
 import math
@@ -305,11 +305,13 @@ class TwitchHelixAPI(BaseTwitchAPI):
         user_data = self._fetch_user_data_from_authorization(authorization)
         return UserBasics(user_data["id"], user_data["login"], user_data["display_name"])
 
-    def _fetch_subscribers_page(self, broadcaster_id, authorization, after_pagination_cursor=None):
+    def _fetch_subscribers_page(
+        self, broadcaster_id: str, authorization, after_pagination_cursor: Optional[str] = None
+    ) -> Tuple[List[UserBasics], Optional[str]]:
         """Fetch a list of subscribers (user IDs) of a broadcaster + a pagination cursor as a tuple."""
         response = self.get(
             "/subscriptions",
-            {"broadcaster_id": broadcaster_id, **self._with_pagination(after_pagination_cursor)},
+            {"broadcaster_id": broadcaster_id, "first": 100, **self._with_pagination(after_pagination_cursor)},
             authorization=authorization,
         )
 
@@ -340,19 +342,20 @@ class TwitchHelixAPI(BaseTwitchAPI):
         #   "pagination": {},
         # }
 
-        subscribers = [entry["user_id"] for entry in response["data"]]
+        subscribers = [
+            UserBasics(entry["user_id"], entry["user_login"], entry["user_name"]) for entry in response["data"]
+        ]
         pagination_cursor = response["pagination"].get("cursor", None)
 
         return subscribers, pagination_cursor
 
-    def fetch_all_subscribers(self, broadcaster_id, authorization):
+    def fetch_all_subscribers(self, broadcaster_id: str, authorization) -> Set[UserBasics]:
         """Fetch a list of all subscribers (user IDs) of a broadcaster."""
-        subscriber_ids = self._fetch_all_pages(self._fetch_subscribers_page, broadcaster_id, authorization)
+        subscribers = self._fetch_all_pages(self._fetch_subscribers_page, broadcaster_id, authorization)
 
         # Dedupe the list of subscribers since the API can return the same IDs multiple times
-        subscriber_ids = list(set(subscriber_ids))
 
-        return subscriber_ids
+        return set(subscribers)
 
     def _bulk_fetch_user_data(self, key_type, lookup_keys):
         all_entries = []
@@ -602,3 +605,156 @@ class TwitchHelixAPI(BaseTwitchAPI):
             expiry=60 * 60,
             force_fetch=force_fetch,
         )
+
+    def send_chat_announcement(self, channel_id: str, bot_id: str, message: str, authorization) -> None:
+        """Posts the message and colour provided in order to post an announcement.
+        channel_id, bot_id and message are all required fields. bot_id must match the user ID
+        in authorization.
+        Messages longer than 500 characters are truncated by Twitch.
+        An exception is raised if there are any invalid or missing details."""
+        self.post_204(
+            "/chat/announcements",
+            {"broadcaster_id": channel_id, "moderator_id": bot_id},
+            authorization=authorization,
+            json={"message": message},
+        )
+
+    def _delete_chat_messages(
+        self, channel_id: str, bot_id: str, authorization, message_id: Optional[str] = None
+    ) -> None:
+        """Deletes message entry from helix using the message_id. If no message_id is provided, the request removes all messages in chat.
+        channel_id and bot_id are required fields. bot_id must match the user ID in authorization.
+        An exception is raised if there are any invalid or missing details."""
+        self.delete(
+            "/moderation/chat",
+            {"broadcaster_id": channel_id, "moderator_id": bot_id, "message_id": message_id},
+            authorization=authorization,
+        )
+
+    def delete_single_message(self, channel_id: str, bot_id: str, authorization, message_id: str) -> None:
+        """Deletes a single message from the chatroom using the message_id.
+        channel_id, bot_id and message_id are all required fields. bot_id must match the user ID
+        in authorization.
+        An exception is raised if there are any invalid or missing details."""
+        self._delete_chat_messages(channel_id, bot_id, authorization, message_id)
+
+    def delete_all_messages(self, channel_id: str, bot_id: str, authorization) -> None:
+        """Deletes all messages from the chatroom.
+        channel_id and bot_id are required fields. bot_id must match the user ID in authorization.
+        An exception is raised if there are any invalid or missing details."""
+        self._delete_chat_messages(channel_id, bot_id, authorization)
+
+    def _update_chat_settings(
+        self,
+        channel_id: str,
+        bot_id: str,
+        authorization,
+        emote_mode: Optional[bool] = None,
+        follower_mode: Optional[bool] = None,
+        follower_mode_duration: Optional[int] = None,
+        non_moderator_chat_delay: Optional[bool] = None,
+        non_moderator_chat_delay_duration: Optional[int] = None,
+        slow_mode: Optional[bool] = None,
+        slow_mode_wait_time: Optional[int] = None,
+        subscriber_mode: Optional[bool] = None,
+        unique_chat_mode: Optional[bool] = None,
+    ) -> None:
+        """Calls the update chat settings Helix endpoint using any of the optional settings.
+        channel_id and bot_id are required fields. bot_id must match the user ID in authorization.
+        An exception is raised if there are any invalid or missing details."""
+        self.patch(
+            "/chat/settings",
+            {"broadcaster_id": channel_id, "moderator_id": bot_id},
+            authorization=authorization,
+            json={
+                "emote_mode": emote_mode,
+                "follower_mode": follower_mode,
+                "follower_mode_duration": follower_mode_duration,
+                "non_moderator_chat_delay": non_moderator_chat_delay,
+                "non_moderator_chat_delay_duration": non_moderator_chat_delay_duration,
+                "slow_mode": slow_mode,
+                "slow_mode_wait_time": slow_mode_wait_time,
+                "subscriber_mode": subscriber_mode,
+                "unique_chat_mode": unique_chat_mode,
+            },
+        )
+
+    def update_emote_only_mode(self, channel_id: str, bot_id: str, authorization, emote_mode: bool):
+        """Calls the _unique_chat_settings function using the emote_mode parameter.
+        channel_id, bot_id and emote_mode are all required fields. bot_id must match the user ID in authorization."""
+        self._update_chat_settings(channel_id, bot_id, authorization, emote_mode=emote_mode)
+
+    def update_unique_chat_mode(self, channel_id: str, bot_id: str, authorization, unique_chat_mode: bool) -> None:
+        """Calls the _update_chat_settings function using the unique_chat_mode parameter.
+        channel_id, bot_id and unique_chat_mode are all required fields. bot_id must match the user ID in authorization."""
+        self._update_chat_settings(channel_id, bot_id, authorization, unique_chat_mode=unique_chat_mode)
+
+    def update_slow_mode(
+        self, channel_id: str, bot_id: str, authorization, slow_mode: bool, slow_mode_wait_time: int
+    ) -> None:
+        """Calls the _update_chat_settings function using the slow_mode and slow_mode_wait_time parametes.
+        channel_id, bot_id, slow_mode and slow_mode_wait_time are all required fields. bot_id must match the user ID in authorization."""
+        self._update_chat_settings(
+            channel_id, bot_id, authorization, slow_mode=slow_mode, slow_mode_wait_time=slow_mode_wait_time
+        )
+
+    def update_sub_mode(self, channel_id: str, bot_id: str, authorization, subscriber_mode: bool) -> None:
+        """Calls the _update_chat_settings function using the subscriber_mode parameter.
+        channel_id, bot_id and subscriber_mode are all required fields. bot_id must match the user ID in authorization."""
+        self._update_chat_settings(channel_id, bot_id, authorization, subscriber_mode=subscriber_mode)
+
+    def _fetch_moderators_page(
+        self,
+        broadcaster_id: str,
+        authorization,
+        after_pagination_cursor=None,
+    ):
+        """Calls the Get Moderators Helix endpoint using the broadcaster_id parameter.
+        broadcaster_id is a required field. broadcaster_id must match the user ID in authorization."""
+        response = self.get(
+            "/moderation/moderators",
+            {"broadcaster_id": broadcaster_id, "first": 100, **self._with_pagination(after_pagination_cursor)},
+            authorization=authorization,
+        )
+
+        moderators = [
+            UserBasics(entry["user_id"], entry["user_login"], entry["user_name"]) for entry in response["data"]
+        ]
+        pagination_cursor = response["pagination"].get("cursor", None)
+
+        return moderators, pagination_cursor
+
+    def fetch_all_moderators(self, broadcaster_id: str, authorization):
+        """Calls the _fetch_moderators_page function using the broadcaster_id parameter.
+        broadcaster_id is a required field and must match the user ID in authorization."""
+        moderator_ids = self._fetch_all_pages(self._fetch_moderators_page, broadcaster_id, authorization)
+
+        moderator_ids = list(set(moderator_ids))
+
+        return moderator_ids
+
+    def _fetch_vips_page(
+        self,
+        broadcaster_id: str,
+        authorization,
+        after_pagination_cursor: Optional[str] = None,
+    ) -> Tuple[List[UserBasics], Optional[str]]:
+        """Calls the Get VIPs Helix endpoint using the broadcaster_id parameter.
+        broadcaster_id is a required field and must match the user ID in authorization."""
+        response = self.get(
+            "/channels/vips",
+            {"broadcaster_id": broadcaster_id, "first": 100, **self._with_pagination(after_pagination_cursor)},
+            authorization=authorization,
+        )
+
+        vips = [UserBasics(entry["user_id"], entry["user_login"], entry["user_name"]) for entry in response["data"]]
+        pagination_cursor = response["pagination"].get("cursor", None)
+
+        return vips, pagination_cursor
+
+    def fetch_all_vips(self, broadcaster_id: str, authorization) -> Set[UserBasics]:
+        """Calls the _fetch_vips_page function using the broadcaster_id parameter.
+        broadcaster_id is a required field and must match the user ID in authorization."""
+        vips = self._fetch_all_pages(self._fetch_vips_page, broadcaster_id, authorization)
+
+        return set(vips)

@@ -1,4 +1,6 @@
-from typing import Dict, List, Optional, Set, Tuple
+from __future__ import annotations
+
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import logging
 import math
@@ -33,7 +35,7 @@ class TwitchGame:
         self.name: str = name
         self.box_art_url: str = box_art_url
 
-    def jsonify(self):
+    def jsonify(self) -> Dict[str, str]:
         return {
             "id": self.id,
             "name": self.name,
@@ -41,7 +43,7 @@ class TwitchGame:
         }
 
     @staticmethod
-    def from_json(json_data):
+    def from_json(json_data: Dict[str, str]) -> TwitchGame:
         return TwitchGame(
             json_data["id"],
             json_data["name"],
@@ -82,7 +84,7 @@ class TwitchVideo:
         self.video_type: str = video_type
         self.duration: str = duration
 
-    def jsonify(self):
+    def jsonify(self) -> Dict[str, Union[str, int]]:
         return {
             "id": self.id,
             "user_id": self.user_id,
@@ -101,7 +103,8 @@ class TwitchVideo:
         }
 
     @staticmethod
-    def from_json(json_data):
+    # TODO(typing): Figure out a better way to express the JSON body as a type as Dict[str, str] is not accurate here
+    def from_json(json_data: Any) -> TwitchVideo:
         return TwitchVideo(
             json_data["id"],
             json_data["user_id"],
@@ -145,7 +148,7 @@ class TwitchHelixAPI(BaseTwitchAPI):
             raise e
 
     @staticmethod
-    def _with_pagination(after_pagination_cursor=None):
+    def _with_pagination(after_pagination_cursor: Optional[str] = None) -> Dict[str, str]:
         """Returns a dict with extra query parameters based on the given pagination cursor.
         This makes a dict with the ?after=xxxx query parameter if a pagination cursor is present,
         and if no pagination cursor is present, returns an empty dict."""
@@ -173,7 +176,8 @@ class TwitchHelixAPI(BaseTwitchAPI):
 
         return responses
 
-    def _fetch_user_data_by_login(self, login: str):
+    # TODO(typing): Figure out a better way to express the Get Users body as a type
+    def _fetch_user_data_by_login(self, login: str) -> Optional[Dict[str, Any]]:
         response = self.get("/users", {"login": login})
 
         if len(response["data"]) <= 0:
@@ -181,7 +185,8 @@ class TwitchHelixAPI(BaseTwitchAPI):
 
         return response["data"][0]
 
-    def _fetch_user_data_by_id(self, user_id):
+    # TODO(typing): Figure out a better way to express the Get Users body as a type
+    def _fetch_user_data_by_id(self, user_id: str) -> Optional[Dict[str, Any]]:
         response = self.get("/users", {"id": user_id})
 
         if len(response["data"]) <= 0:
@@ -189,7 +194,8 @@ class TwitchHelixAPI(BaseTwitchAPI):
 
         return response["data"][0]
 
-    def _fetch_user_data_from_authorization(self, authorization):
+    # TODO(typing): Figure out a better way to express the Get Users body as a type
+    def _fetch_user_data_from_authorization(self, authorization) -> Dict[str, Any]:
         response = self.get("/users", authorization=authorization)
 
         if len(response["data"]) <= 0:
@@ -255,7 +261,7 @@ class TwitchHelixAPI(BaseTwitchAPI):
             expiry=lambda response: 30 if response else 300,
         )
 
-    def fetch_follow_since(self, from_id, to_id):
+    def fetch_follow_since(self, from_id: str, to_id: str) -> Optional[datetime]:
         response = self.get("/users/follows", {"from_id": from_id, "to_id": to_id})
 
         if len(response["data"]) <= 0:
@@ -263,7 +269,7 @@ class TwitchHelixAPI(BaseTwitchAPI):
 
         return self.parse_datetime(response["data"][0]["followed_at"])
 
-    def get_follow_since(self, from_id: str, to_id: str):
+    def get_follow_since(self, from_id: str, to_id: str) -> Optional[datetime]:
         return self.cache.cache_fetch_fn(
             redis_key=f"api:twitch:helix:follow-since:{from_id}:{to_id}",
             serializer=DateTimeSerializer(),
@@ -357,7 +363,7 @@ class TwitchHelixAPI(BaseTwitchAPI):
 
         return set(subscribers)
 
-    def _bulk_fetch_user_data(self, key_type, lookup_keys):
+    def _bulk_fetch_user_data(self, key_type: str, lookup_keys: List[str]) -> List[Optional[Any]]:
         all_entries = []
 
         # We can fetch a maximum of 100 users on each helix request
@@ -375,7 +381,8 @@ class TwitchHelixAPI(BaseTwitchAPI):
 
         return all_entries
 
-    def bulk_get_user_data_by_id(self, user_ids):
+    # TODO(typing): Figure out a better way to express the Get Users body as a type
+    def bulk_get_user_data_by_id(self, user_ids: List[str]) -> List[Optional[Any]]:
         return self.cache.cache_bulk_fetch_fn(
             user_ids,
             redis_key_fn=lambda user_id: f"api:twitch:helix:user:by-id:{user_id}",
@@ -383,7 +390,8 @@ class TwitchHelixAPI(BaseTwitchAPI):
             expiry=lambda response: 30 if response is None else 300,
         )
 
-    def bulk_get_user_data_by_login(self, logins):
+    # TODO(typing): Figure out a better way to express the Get Users body as a type
+    def bulk_get_user_data_by_login(self, logins: List[str]) -> List[Optional[Any]]:
         return self.cache.cache_bulk_fetch_fn(
             logins,
             redis_key_fn=lambda login: f"api:twitch:helix:user:by-login:{login}",
@@ -495,8 +503,7 @@ class TwitchHelixAPI(BaseTwitchAPI):
                 if game_dict is None:
                     all_entries.append(None)
                 else:
-                    value: TwitchGame = TwitchGame(**response_map.get(lookup_key, None))
-                    all_entries.append(value)
+                    all_entries.append(TwitchGame(game_dict["id"], game_dict["name"], game_dict["box_art_url"]))
 
         return all_entries
 
@@ -758,3 +765,40 @@ class TwitchHelixAPI(BaseTwitchAPI):
         vips = self._fetch_all_pages(self._fetch_vips_page, broadcaster_id, authorization)
 
         return set(vips)
+
+    def ban_user(
+        self,
+        broadcaster_id: str,
+        bot_id: str,
+        authorization,
+        user_id: str,
+        reason: Optional[str] = None,
+    ) -> Tuple[str, Optional[str]]:
+        """Calls the Ban User Helix endpoint using the broadcaster_id, bot_id, reason & user_id parameters.
+        broadcaster_id, bot_id, reason & user_id are all required parameters. bot_id must match the user_id in authorization."""
+        response = self.post(
+            "/moderation/bans",
+            {"broadcaster_id": broadcaster_id, "moderator_id": bot_id},
+            authorization=authorization,
+            json={"data": {"reason": reason, "user_id": user_id}},
+        )
+
+        created_at = response["data"][0]["created_at"]
+        end_time = response["data"][0]["end_time"]
+
+        return created_at, end_time
+
+    def unban_user(
+        self,
+        broadcaster_id: str,
+        bot_id: str,
+        user_id: str,
+        authorization,
+    ) -> None:
+        """Calls the Unban User Helix endpoint using the broadcaster_id, bot_user & user_id parameters.
+        All parameters are required. bot_id must match the user_id in authorization."""
+        self.delete(
+            "/moderation/bans",
+            {"broadcaster_id": broadcaster_id, "moderator_id": bot_id, "user_id": user_id},
+            authorization=authorization,
+        )

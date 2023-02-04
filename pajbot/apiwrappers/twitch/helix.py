@@ -349,7 +349,10 @@ class TwitchHelixAPI(BaseTwitchAPI):
         # }
 
         subscribers = [
-            UserBasics(entry["user_id"], entry["user_login"], entry["user_name"]) for entry in response["data"]
+            UserBasics(entry["user_id"], entry["user_login"], entry["user_name"])
+            for entry in response["data"]
+            # deleted users can appear with empty name https://github.com/twitchdev/issues/issues/717
+            if entry["user_login"] is not None and entry["user_login"] != ""
         ]
         pagination_cursor = response["pagination"].get("cursor", None)
 
@@ -693,21 +696,24 @@ class TwitchHelixAPI(BaseTwitchAPI):
 
     def update_unique_chat_mode(self, channel_id: str, bot_id: str, authorization, unique_chat_mode: bool) -> None:
         """Calls the _update_chat_settings function using the unique_chat_mode parameter.
-        channel_id, bot_id and unique_chat_mode are all required fields. bot_id must match the user ID in authorization."""
+        channel_id, bot_id and unique_chat_mode are all required fields. bot_id must match the user ID in authorization.
+        """
         self._update_chat_settings(channel_id, bot_id, authorization, unique_chat_mode=unique_chat_mode)
 
     def update_slow_mode(
         self, channel_id: str, bot_id: str, authorization, slow_mode: bool, slow_mode_wait_time: int
     ) -> None:
         """Calls the _update_chat_settings function using the slow_mode and slow_mode_wait_time parametes.
-        channel_id, bot_id, slow_mode and slow_mode_wait_time are all required fields. bot_id must match the user ID in authorization."""
+        channel_id, bot_id, slow_mode and slow_mode_wait_time are all required fields. bot_id must match the user ID in authorization.
+        """
         self._update_chat_settings(
             channel_id, bot_id, authorization, slow_mode=slow_mode, slow_mode_wait_time=slow_mode_wait_time
         )
 
     def update_sub_mode(self, channel_id: str, bot_id: str, authorization, subscriber_mode: bool) -> None:
         """Calls the _update_chat_settings function using the subscriber_mode parameter.
-        channel_id, bot_id and subscriber_mode are all required fields. bot_id must match the user ID in authorization."""
+        channel_id, bot_id and subscriber_mode are all required fields. bot_id must match the user ID in authorization.
+        """
         self._update_chat_settings(channel_id, bot_id, authorization, subscriber_mode=subscriber_mode)
 
     def _fetch_moderators_page(
@@ -775,7 +781,8 @@ class TwitchHelixAPI(BaseTwitchAPI):
         reason: Optional[str] = None,
     ) -> Tuple[str, Optional[str]]:
         """Calls the Ban User Helix endpoint using the broadcaster_id, bot_id, reason & user_id parameters.
-        broadcaster_id, bot_id, reason & user_id are all required parameters. bot_id must match the user_id in authorization."""
+        broadcaster_id, bot_id, reason & user_id are all required parameters. bot_id must match the user_id in authorization.
+        """
         response = self.post(
             "/moderation/bans",
             {"broadcaster_id": broadcaster_id, "moderator_id": bot_id},

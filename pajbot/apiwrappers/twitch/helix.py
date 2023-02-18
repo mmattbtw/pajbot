@@ -51,6 +51,57 @@ class TwitchGame:
         )
 
 
+class TwitchBannedUser:
+    def __init__(
+        self,
+        user_id: str,
+        user_login: str,
+        user_name: str,
+        created_at: str,
+        expires_at: str,
+        reason: str,
+        moderator_id: str,
+        moderator_login: str,
+        moderator_name: str,
+    ):
+        self.user_id = user_id
+        self.user_login = user_login
+        self.user_name = user_name
+        self.created_at = created_at
+        self.expires_at = expires_at
+        self.reason = reason
+        self.moderator_id = moderator_id
+        self.moderator_login = moderator_login
+        self.moderator_name = moderator_name
+
+    def jsonify(self):
+        return {
+            "user_id": self.user_id,
+            "user_login": self.user_login,
+            "user_name": self.user_name,
+            "created_at": self.created_at,
+            "expires_at": self.expires_at,
+            "reason": self.reason,
+            "moderator_id": self.moderator_id,
+            "moderator_login": self.moderator_login,
+            "moderator_name": self.moderator_name,
+        }
+
+    @staticmethod
+    def from_json(json_data):
+        return TwitchBannedUser(
+            json_data["user_id"],
+            json_data["user_login"],
+            json_data["user_name"],
+            json_data["created_at"],
+            json_data["expires_at"],
+            json_data["reason"],
+            json_data["moderator_id"],
+            json_data["moderator_login"],
+            json_data["moderator_name"],
+        )
+
+
 class TwitchVideo:
     def __init__(
         self,
@@ -689,6 +740,25 @@ class TwitchHelixAPI(BaseTwitchAPI):
             },
         )
 
+    def update_follower_mode(
+        self,
+        channel_id: str,
+        bot_id: str,
+        authorization,
+        state: bool,
+        duration_m: Optional[int] = None,
+    ) -> None:
+        """Calls the _update_chat_settings function using the state and duration_m parameters.
+        duration_m is in minutes.
+        bot_id must match the user ID in authorization."""
+        self._update_chat_settings(
+            channel_id,
+            bot_id,
+            authorization,
+            follower_mode=state,
+            follower_mode_duration=duration_m,
+        )
+
     def update_emote_only_mode(self, channel_id: str, bot_id: str, authorization, emote_mode: bool):
         """Calls the _unique_chat_settings function using the emote_mode parameter.
         channel_id, bot_id and emote_mode are all required fields. bot_id must match the user ID in authorization."""
@@ -781,13 +851,38 @@ class TwitchHelixAPI(BaseTwitchAPI):
         reason: Optional[str] = None,
     ) -> Tuple[str, Optional[str]]:
         """Calls the Ban User Helix endpoint using the broadcaster_id, bot_id, reason & user_id parameters.
-        broadcaster_id, bot_id, reason & user_id are all required parameters. bot_id must match the user_id in authorization.
+        broadcaster_id, bot_id & user_id are all required parameters. bot_id must match the user_id in authorization.
         """
         response = self.post(
             "/moderation/bans",
             {"broadcaster_id": broadcaster_id, "moderator_id": bot_id},
             authorization=authorization,
             json={"data": {"reason": reason, "user_id": user_id}},
+        )
+
+        created_at = response["data"][0]["created_at"]
+        end_time = response["data"][0]["end_time"]
+
+        return created_at, end_time
+
+    def timeout_user(
+        self,
+        broadcaster_id: str,
+        bot_id: str,
+        authorization,
+        user_id: str,
+        duration: int,
+        reason: Optional[str] = None,
+    ) -> Tuple[str, Optional[str]]:
+        """Calls the Ban User Helix endpoint using the broadcaster_id, bot_id, reason & user_id parameters.
+        broadcaster_id, bot_id & user_id are all required parameters. bot_id must match the user_id in authorization.
+        duration is in seconds
+        """
+        response = self.post(
+            "/moderation/bans",
+            {"broadcaster_id": broadcaster_id, "moderator_id": bot_id},
+            authorization=authorization,
+            json={"data": {"reason": reason, "user_id": user_id, "duration": duration}},
         )
 
         created_at = response["data"][0]["created_at"]
@@ -808,4 +903,49 @@ class TwitchHelixAPI(BaseTwitchAPI):
             "/moderation/bans",
             {"broadcaster_id": broadcaster_id, "moderator_id": bot_id, "user_id": user_id},
             authorization=authorization,
+        )
+
+    def _get_banned_users(
+        self,
+        broadcaster_id: str,
+        authorization,
+        user_id: Optional[str] = None,
+        after_pagination_cursor: Optional[str] = None,
+    ) -> Tuple[List[TwitchBannedUser], Optional[str]]:
+        """Calls the Get Banned Users Helix endpoint using the broadcaster_id & user_id parameter.
+        broadcaster_id is a required field and must match the user ID in authorization."""
+        response = self.get(
+            "/moderation/banned",
+            {
+                "broadcaster_id": broadcaster_id,
+                "user_id": user_id,
+                "first": 100,
+                **self._with_pagination(after_pagination_cursor),
+            },
+            authorization=authorization,
+        )
+
+        users = [TwitchBannedUser.from_json(data) for data in response["data"]]
+        pagination_cursor = response["pagination"].get("cursor", None)
+
+        return users, pagination_cursor
+
+    def get_banned_user(self, broadcaster_id: str, authorization, user_id: str) -> Optional[TwitchBannedUser]:
+        """Calls the _get_banned_users function using the broadcaster_id and user_id parameter.
+        All parameters are required and broadcaster_id must match the user ID in authorization."""
+        response, _ = self._get_banned_users(broadcaster_id, authorization, user_id)
+
+        return response[0] if len(response) > 0 else None
+
+    def send_whisper(self, sender_id: str, recepient_id: str, message: str, authorization) -> None:
+        """Calls the Helix Send Whisper endpoint
+        sender_id must match user id in authorization.
+        message must be at most 500 characters if sending a whisper to a new user, or 10,000 characters if sending to a user that has whispered you before.
+        messages that are too long will be truncated by Twitch.
+        """
+        self.post_204(
+            "/whispers",
+            {"from_user_id": sender_id, "to_user_id": recepient_id},
+            authorization=authorization,
+            json={"message": message},
         )

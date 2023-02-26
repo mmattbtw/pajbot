@@ -2,11 +2,21 @@
 
 ## Unversioned
 
+- Dev: Remove `ratelimiter` dependency, it was used to rate limit IRC connection creations which is not necessary any longer. (#2340)
+
+## v1.63
+
 Due to Twitch deprecating most IRC commands, we are now migrating to the equivalent Helix calls.
 For your bot to work after these changes, the bot owner **must** re-authenticate the bot with the `/bot_login` endpoint and the streamer **must** re-authenticate with the `/streamer_login` endpoint.
 
 Remember to bring your dependencies up to date with `./scripts/venvinstall.sh` when updating to this version!
 
+- Breaking: Migrated whispers from IRC to Helix. Note that this will require you to add a phone number to the Bot account for whispers to continue working. (#2317)
+- Breaking: Migrated timeouts from IRC to Helix. (#2318, #2321)
+- Breaking: Migrated Follower Only function from IRC to Helix. (#2175)
+- Breaking: Migrated untimeout function from IRC to Helix. (#2223)
+- Breaking: Migrated unbanning function from IRC to Helix. (#2222)
+- Breaking: Migrated banning function from IRC to Helix. (#2213)
 - Breaking: Migrated VIP Refresh module from IRC to Helix. (#2188)
 - Breaking: Migrated Moderator Refresh module from IRC to Helix. (#2186, #2202)
 - Breaking: Migrated Sub Mode function from IRC to Helix. (#2185)
@@ -15,10 +25,23 @@ Remember to bring your dependencies up to date with `./scripts/venvinstall.sh` w
 - Breaking: Migrated Unique Chat function from IRC to Helix. (#2177)
 - Breaking: Migrated Announce from IRC to Helix. (#2141)
 - Breaking: Migrated Delete moderation action from IRC to Helix. (#2173)
+- Bugfix: Handle empty strings in the point parser. (#2325)
+- Bugfix: Exclude deleted accounts from twitch subscribers list. (#2292)
 - Bugfix: Fix bot not correctly tracking online/offline state of stream due to TwitchGame not being deserialized properly. (#2243)
+- Bugfix: Exclude deleted accounts from Twitch VIP & Moderators lists, and try to handle empty usernames better in other places. (#2319)
+- Bugfix: Fix bot not handling missing streamer token when trying to refresh moderators. (#2324)
+- Minor: Add setting to disable tweet writing on Twitter module. (#2336)
+- Minor: Updated `Wide Emote Limit` module to account for wide BTTV emotes (##2272)
 - Minor: Migrated LastFM module to the `reply` response type. (#2118, #2128)
 - Minor: Increased efficiency and speed of subscriber status refresh. (#2203)
 - Minor: Install documentation now recommends the use of limited-scope CloudFlare API tokens. (#2201)
+- Minor: Add setting to control how frequently user ranks should be refreshed. (#2320)
+- Minor: Update variable documentation to clarify how (not) to use `tb:user` and `tb:source`. (#2333)
+- Dev: Add the option to hide timestamp in log entries using the `PB1_LOG_HIDE_TIMESTAMPS` environment variable. (#2334)
+- Dev: Migrated to 7TV's new REST API. (#2268)
+- Dev: Add a bunch of typing related to `on_message`/`on_pubmsg` & command actions. (#2321)
+- Dev: Add typing to all quest modules. (#2322)
+- Dev: Add typing to the ModeratorsRefresh module. (#2324)
 
 ## v1.62
 

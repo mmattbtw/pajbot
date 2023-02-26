@@ -15,7 +15,6 @@ log = logging.getLogger(__name__)
 
 
 class RouletteModule(BaseModule):
-
     ID = __name__.split(".")[-1]
     NAME = "Roulette"
     DESCRIPTION = "Lets players roulette with themselves for points"
@@ -212,7 +211,7 @@ class RouletteModule(BaseModule):
             )
             return False
 
-        msg_split = message.split(" ")
+        msg_split = [part for part in message.split(" ") if part != ""]
         try:
             bet = utils.parse_points_amount(source, msg_split[0])
         except pajbot.exc.InvalidPointAmount as e:

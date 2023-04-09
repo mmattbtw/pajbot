@@ -1,21 +1,23 @@
 from __future__ import annotations
 
-from typing import Iterator, Optional
+from typing import TYPE_CHECKING, Iterator, Optional
 
 import logging
 from contextlib import contextmanager
 
 import sqlalchemy
 from psycopg2.extensions import STATUS_IN_TRANSACTION
-from psycopg2.extensions import connection as Psycopg2Connection
 from sqlalchemy import create_engine, event, inspect
-from sqlalchemy.orm import DeclarativeBase, Session, scoped_session, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import Session, scoped_session, sessionmaker
+
+if TYPE_CHECKING:
+    from psycopg2 import connection as Psycopg2Connection
+
+
+Base = declarative_base()
 
 log = logging.getLogger("pajbot")
-
-
-class Base(DeclarativeBase):
-    pass
 
 
 class ServerNoticeLogger:
@@ -165,9 +167,7 @@ class DBManager:
         # > The returned object is a proxied version of the DBAPI connection object used by the underlying driver in use.
         # To be able to use the connection as a contextmanager for transaction control,
         # we need the actual underlying connection, the SQLAlchemy proxy will not work for this.
-        raw_connection: Optional[Psycopg2Connection] = pool_connection.driver_connection
-        if raw_connection is None:
-            raise ValueError("unable to get raw db api object")
+        raw_connection = pool_connection.connection
 
         try:
             if autocommit:
@@ -226,10 +226,9 @@ class DBManager:
         try:
             inspected_object = inspect(raw_object)
             log.debug(f"Object:     {raw_object}")
-            if inspected_object is not None:
-                log.debug(f"Transient:  {inspected_object.transient}")
-                log.debug(f"Pending:    {inspected_object.pending}")
-                log.debug(f"Persistent: {inspected_object.persistent}")
-                log.debug(f"Detached:   {inspected_object.detached}")
+            log.debug(f"Transient:  {inspected_object.transient}")
+            log.debug(f"Pending:    {inspected_object.pending}")
+            log.debug(f"Persistent: {inspected_object.persistent}")
+            log.debug(f"Detached:   {inspected_object.detached}")
         except:
             log.exception("Uncaught exception in DBManager.debug")

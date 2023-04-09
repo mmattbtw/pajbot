@@ -68,9 +68,11 @@ class ChattersRefreshModule(BaseModule):
             log.warn("_update_chatters failed in ChattersRefreshModule because bot is None")
             return
 
-        chatters = self.bot.twitch_helix_api.get_all_chatters(
-            self.bot.streamer.id, self.bot.bot_user.id, self.bot.bot_token_manager
-        )
+        chatter_logins = self.bot.twitch_tmi_api.get_chatter_logins_by_login(self.bot.streamer.login)
+        unfiltered_chatter_basics = self.bot.twitch_helix_api.bulk_get_user_basics_by_login(chatter_logins)
+
+        # filter out invalid/deleted/etc. users
+        chatter_basics = [e for e in unfiltered_chatter_basics if e is not None]
 
         is_stream_online = self.bot.stream_manager.online
 
@@ -103,7 +105,7 @@ class ChattersRefreshModule(BaseModule):
                 "add_time_in_chat_online": add_time_in_chat_online,
                 "add_time_in_chat_offline": add_time_in_chat_offline,
             }
-            for basics in chatters
+            for basics in chatter_basics
         ]
 
         with DBManager.create_session_scope() as db_session:
@@ -122,7 +124,7 @@ ON CONFLICT (id) DO UPDATE SET
                 update_values,
             )
 
-        log.info(f"Successfully updated {len(chatters)} chatters")
+        log.info(f"Successfully updated {len(chatter_basics)} chatters")
 
     def load_commands(self, **options):
         self.commands["reload"] = Command.multiaction_command(

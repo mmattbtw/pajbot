@@ -7,20 +7,18 @@ from pajbot.modules import ChattersRefreshModule
 
 import markdown
 from flask import render_template
-from flask.typing import ResponseReturnValue
 from markupsafe import Markup
 from sqlalchemy import column, text
-from sqlalchemy.future import select
 
 log = logging.getLogger(__name__)
 
 
 def init(app):
     @app.route("/points")
-    def points() -> ResponseReturnValue:
+    def points():
         with DBManager.create_session_scope() as db_session:
             custom_web_content = db_session.query(WebContent).filter_by(page="points").first()
-            custom_content: str = ""
+            custom_content = ""
             if custom_web_content and custom_web_content.content:
                 try:
                     custom_content = Markup(markdown.markdown(custom_web_content.content))
@@ -40,14 +38,11 @@ def init(app):
             #  Execution Time: 0.089 ms
             #
             # (see also the extensive comment on migration revision ID 2, 0002_create_index_on_user_points.py)
-
-            query = select(User, column("rank")).from_statement(
+            rankings = db_session.query(User, column("rank")).from_statement(
                 text(
                     'SELECT * FROM (SELECT *, rank() OVER (ORDER BY points DESC) AS rank FROM "user") AS subquery LIMIT 30'
                 )
             )
-
-            rankings = db_session.execute(query).tuples().all()
 
             chatters_refresh_enabled = ChattersRefreshModule.is_enabled()
             chatters_refresh_settings = ChattersRefreshModule.module_settings()

@@ -1,7 +1,3 @@
-"""
-Modules can be enabled & disabled from the web UI
-Modules can be configured from the web UI
-"""
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List, Optional
@@ -12,8 +8,8 @@ import logging
 from pajbot.managers.db import Base, DBManager
 from pajbot.utils import find
 
-from sqlalchemy import Text
-from sqlalchemy.orm import Mapped, mapped_column
+import sqlalchemy
+from sqlalchemy import BOOLEAN, TEXT, Column
 
 if TYPE_CHECKING:
     from pajbot.bot import Bot
@@ -26,9 +22,9 @@ log = logging.getLogger("pajbot")
 class Module(Base):
     __tablename__ = "module"
 
-    id: Mapped[str] = mapped_column(Text, primary_key=True)
-    enabled: Mapped[bool]
-    settings: Mapped[Optional[str]]
+    id = Column(TEXT, primary_key=True)
+    enabled = Column(BOOLEAN, nullable=False, default=False, server_default=sqlalchemy.sql.expression.false())
+    settings = Column(TEXT, nullable=True, default=None, server_default=sqlalchemy.sql.expression.null())
 
     def __init__(self, module_id: str, **options: Any) -> None:
         self.id = module_id

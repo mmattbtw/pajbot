@@ -1,8 +1,5 @@
-from __future__ import annotations
+from typing import Any, List
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
-
-import datetime
 import logging
 from urllib.parse import urlsplit
 
@@ -11,12 +8,8 @@ from pajbot.managers.db import Base, DBManager
 from pajbot.managers.handler import HandlerManager
 from pajbot.modules import BaseModule
 
-from sqlalchemy import Integer
-from sqlalchemy.orm import Mapped, Session, mapped_column
+from sqlalchemy import INT, TEXT, Column
 from sqlalchemy_utc import UtcDateTime
-
-if TYPE_CHECKING:
-    from pajbot.bot import Bot
 
 log = logging.getLogger(__name__)
 
@@ -24,15 +17,11 @@ log = logging.getLogger(__name__)
 class LinkTrackerLink(Base):
     __tablename__ = "link_data"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    # TODO: url is actually nullable. Fix with a migration
-    url: Mapped[str]
-    # TODO: times_linked is actually nullable. Fix with a migration
-    times_linked: Mapped[int]
-    # TODO: first_linked is actually nullable. Fix with a migration
-    first_linked: Mapped[datetime.datetime] = mapped_column(UtcDateTime())
-    # TODO: last_linked is actually nullable. Fix with a migration
-    last_linked: Mapped[datetime.datetime] = mapped_column(UtcDateTime())
+    id = Column(INT, primary_key=True)
+    url = Column(TEXT)
+    times_linked = Column(INT)
+    first_linked = Column(UtcDateTime())
+    last_linked = Column(UtcDateTime())
 
     def __init__(self, url: str) -> None:
         self.url = url
@@ -41,7 +30,7 @@ class LinkTrackerLink(Base):
         self.first_linked = now
         self.last_linked = now
 
-    def increment(self) -> None:
+    def increment(self):
         self.times_linked += 1
         self.last_linked = utils.now()
 
@@ -54,19 +43,17 @@ class LinkTrackerModule(BaseModule):
     CATEGORY = "Feature"
     SETTINGS: List[Any] = []
 
-    def __init__(self, bot: Optional[Bot]) -> None:
+    def __init__(self, bot):
         super().__init__(bot)
-        self.db_session: Optional[Session] = None
-        self.links: Dict[str, LinkTrackerLink] = {}
+        self.db_session = None
+        self.links = {}
 
-    def on_message(self, whisper: bool, urls: List[str], **rest) -> bool:
+    def on_message(self, whisper, urls, **rest):
         if whisper is False:
             for url in urls:
                 self.add_url(url)
 
-        return True
-
-    def add_url(self, url: str) -> None:
+    def add_url(self, url):
         if self.db_session is None:
             return
         url_data = urlsplit(url)
@@ -97,16 +84,11 @@ class LinkTrackerModule(BaseModule):
 
         self.links[url].increment()
 
-    def on_commit(self, **rest) -> bool:
+    def on_commit(self, **rest):
         if self.db_session is not None:
             self.db_session.commit()
 
-        return True
-
-    def enable(self, bot: Optional[Bot]) -> None:
-        if bot is None:
-            return
-
+    def enable(self, bot):
         HandlerManager.add_handler("on_message", self.on_message, priority=200)
         HandlerManager.add_handler("on_commit", self.on_commit)
 
@@ -117,10 +99,7 @@ class LinkTrackerModule(BaseModule):
             self.links = {}
         self.db_session = DBManager.create_session()
 
-    def disable(self, bot: Optional[Bot]) -> None:
-        if bot is None:
-            return
-
+    def disable(self, bot):
         HandlerManager.remove_handler("on_message", self.on_message)
         HandlerManager.remove_handler("on_commit", self.on_commit)
 

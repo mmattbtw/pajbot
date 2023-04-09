@@ -1,12 +1,11 @@
 from pajbot.managers.db import Base
 
-from sqlalchemy import Integer
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import INT, TEXT, Column
 
 
 class WebContent(Base):
     __tablename__ = "web_content"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    page: Mapped[str]
-    content: Mapped[str]
+    id = Column(INT, primary_key=True)
+    page = Column(TEXT, nullable=False)
+    content = Column(TEXT, nullable=True)

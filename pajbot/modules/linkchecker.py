@@ -18,8 +18,8 @@ from pajbot.modules import BaseModule, ModuleSetting
 
 import requests
 from bs4 import BeautifulSoup
-from sqlalchemy import Integer
-from sqlalchemy.orm import Mapped, Session, mapped_column
+from sqlalchemy import INT, TEXT, Column
+from sqlalchemy.orm import Session
 from urlextract import URLExtract
 
 if TYPE_CHECKING:
@@ -107,11 +107,9 @@ class LinkCheckerCache:
 
 
 class LinkCheckerLink:
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    # TODO: domain is actually nullable in the database. We should run a migration on link_blacklist and link_whitelist
-    domain: Mapped[str]
-    # TODO: path is actually nullable in the database. We should run a migration on link_blacklist and link_whitelist
-    path: Mapped[str]
+    id = Column(INT, primary_key=True)
+    domain = Column(TEXT)
+    path = Column(TEXT)
 
     def is_subdomain(self, x: str) -> bool:
         """Returns True if x is a subdomain of this link, otherwise return False."""
@@ -136,8 +134,7 @@ class LinkCheckerLink:
 class BlacklistedLink(Base, LinkCheckerLink):
     __tablename__ = "link_blacklist"
 
-    # TODO: level is actually nullable in the database. We should run a migration on link_blacklist
-    level: Mapped[int]
+    level = Column(INT)
 
     def __init__(self, domain: str, path: str, level: int) -> None:
         self.domain = domain

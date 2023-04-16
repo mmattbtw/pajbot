@@ -21,7 +21,6 @@ from pajbot.apiwrappers.authentication.client_credentials import ClientCredentia
 from pajbot.apiwrappers.authentication.token_manager import AppAccessTokenManager, UserAccessTokenManager
 from pajbot.apiwrappers.twitch.helix import TwitchHelixAPI
 from pajbot.apiwrappers.twitch.id import TwitchIDAPI
-from pajbot.apiwrappers.twitch.tmi import TwitchTMIAPI
 from pajbot.constants import VERSION
 from pajbot.eventloop import SafeDefaultScheduler
 from pajbot.managers.command import CommandManager
@@ -135,7 +134,6 @@ class Bot:
         )
 
         self.twitch_id_api = TwitchIDAPI(self.api_client_credentials)
-        self.twitch_tmi_api = TwitchTMIAPI()
         self.app_token_manager = AppAccessTokenManager(self.twitch_id_api, RedisManager.get())
         self.twitch_helix_api: TwitchHelixAPI = TwitchHelixAPI(RedisManager.get(), self.app_token_manager)
 
@@ -181,11 +179,12 @@ class Bot:
 
         # refresh points_rank and num_lines_rank regularly
 
+        self.user_ranks_refresh_manager = UserRanksRefreshManager(config)
         rank_refresh_mode = config["main"].get("rank_refresh_mode", "0")
         if rank_refresh_mode == "0":
-            UserRanksRefreshManager.start(self.action_queue)
+            self.user_ranks_refresh_manager.start(self.action_queue)
         elif rank_refresh_mode == "1":
-            UserRanksRefreshManager.run_once(self.action_queue)
+            self.user_ranks_refresh_manager.run_once(self.action_queue)
         elif rank_refresh_mode == "2":
             log.info("Not refreshing user rank")
         else:
